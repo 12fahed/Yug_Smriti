@@ -12,27 +12,27 @@ const historicalPeriods = [
   {
     title: "Ancient Egypt",
     description: "Land of Pharaohs and Pyramids",
-    image: "/placeholder.svg?height=1080&width=1920",
-    years: "3100 BCE - 30 BCE",
+    image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=2000", // Pyramids
+    years: "3100 BCE - 30 BCE"
   },
   {
     title: "Ancient Rome",
     description: "The Empire that Shaped the World",
-    image: "/placeholder.svg?height=1080&width=1920",
-    years: "753 BCE - 476 CE",
+    image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=2000", // Colosseum
+    years: "753 BCE - 476 CE"
   },
   {
     title: "Medieval Europe",
     description: "The Age of Knights and Castles",
-    image: "/placeholder.svg?height=1080&width=1920",
-    years: "476 CE - 1453 CE",
+    image: "https://images.unsplash.com/photo-1585001134526-8c1c4e4bd161?q=80&w=2000", // Castle
+    years: "476 CE - 1453 CE"
   },
   {
     title: "Renaissance",
     description: "The Rebirth of Art and Learning",
-    image: "/placeholder.svg?height=1080&width=1920",
-    years: "14th - 17th Century",
-  },
+    image: "https://images.unsplash.com/photo-1598971861713-54ad16a7e72e?q=80&w=2000", // Florence
+    years: "14th - 17th Century"
+  }
 ]
 
 export default function LandingPage() {
