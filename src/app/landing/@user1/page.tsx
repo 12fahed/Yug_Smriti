@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";
 import dynamic from "next/dynamic";
 
 const Globe = dynamic(() => import('../../../components/Globe'), { ssr: false });
@@ -59,13 +59,19 @@ export default function User1() {
     const [showGlobe, setShowGlobe] = useState(false);
     const [showContent, setShowContent] = useState(false);
     
-    const synth = useRef<SpeechSynthesis | null>(null);
-    const utterance = useRef<SpeechSynthesisUtterance | null>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
     const isNarrationComplete = useRef<boolean>(false);
     const contentContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        synth.current = window.speechSynthesis;
+        audioRef.current = new Audio();
+        audioRef.current.onended = () => {
+            if (!isNarrationComplete.current && activeSection < contentSections.length - 1) {
+                setActiveSection(prev => prev + 1);
+            } else {
+                setIsNarrating(false);
+            }
+        };
     }, []);
 
     const handleEventSelection = (event: string) => {
@@ -85,7 +91,9 @@ export default function User1() {
 
     const handleGlobeAnimationComplete = () => {
         setShowGlobe(false);
-        setShowContent(true);
+        setTimeout(() => {
+            setShowContent(true);
+        }, 100);
     };
 
     const splitContentIntoSections = (text: string, images: string[], videos: YouTubeItem[]) => {
@@ -123,6 +131,16 @@ export default function User1() {
         return sections;
     };
 
+    const playVoiceRSS = async (text: string) => {
+        const apiKey = process.env.NEXT_PUBLIC_VOICE_RSS_API_KEY;
+        const url = `https://api.voicerss.org/?key=${apiKey}&hl=en-us&f=48khz_16bit_stereo&v=Mary&src=${encodeURIComponent(text)}`;
+        
+        if (audioRef.current) {
+            audioRef.current.src = url;
+            await audioRef.current.play();
+        }
+    };
+
     const startNarration = () => {
         setIsNarrating(true);
         isNarrationComplete.current = false;
@@ -130,22 +148,14 @@ export default function User1() {
     };
 
     const narrateNextSection = () => {
-        if (!synth.current || activeSection >= contentSections.length) return;
-
         const currentSection = contentSections[activeSection];
         
-        synth.current.cancel();
+        if (audioRef.current) {
+            audioRef.current.pause();
+        }
         
         if (currentSection.type === 'text') {
-            utterance.current = new SpeechSynthesisUtterance(currentSection.content);
-            utterance.current.onend = () => {
-                if (!isNarrationComplete.current && activeSection < contentSections.length - 1) {
-                    setActiveSection(prev => prev + 1);
-                } else {
-                    setIsNarrating(false);
-                }
-            };
-            synth.current.speak(utterance.current);
+            playVoiceRSS(currentSection.content);
         } else {
             setTimeout(() => {
                 if (!isNarrationComplete.current && activeSection < contentSections.length - 1) {
@@ -164,9 +174,9 @@ export default function User1() {
     }, [activeSection]);
 
     const stopNarration = () => {
-        if (synth.current) {
+        if (audioRef.current) {
             isNarrationComplete.current = true;
-            synth.current.cancel();
+            audioRef.current.pause();
             setIsNarrating(false);
         }
     };
@@ -176,6 +186,18 @@ export default function User1() {
             stopNarration();
         } else {
             startNarration();
+        }
+    };
+
+    const handlePrevSection = () => {
+        if (!isNarrating && activeSection > 0) {
+            setActiveSection(prev => prev - 1);
+        }
+    };
+
+    const handleNextSection = () => {
+        if (!isNarrating && activeSection < contentSections.length - 1) {
+            setActiveSection(prev => prev + 1);
         }
     };
 
@@ -240,153 +262,178 @@ export default function User1() {
 
     return (
         <div className="min-h-screen relative" style={{ backgroundColor: '#F5E6D3' }}>
-            {showGlobe && (
-                <Globe onAnimationComplete={handleGlobeAnimationComplete} />
-            )}
-            
-            <AnimatePresence>
-                {(!showGlobe || showContent) && (
-                    <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="container mx-auto py-12 px-4"
-                    >
+            <div className="container mx-auto py-12 px-4">
+                <motion.div 
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-center mb-12"
+                >
+                    <h1 className="text-5xl font-bold mb-4" style={{ color: '#2C1810' }}>
+                        Where's Your Journey to Today?
+                    </h1>
+                    <p className="text-lg" style={{ color: '#8B4513' }}>
+                        Journey through time and explore historical events
+                    </p>
+                </motion.div>
+                
+                <Card className="mb-8" style={{ backgroundColor: '#FFF8DC', borderColor: '#D4AF37' }}>
+                    <CardContent className="pt-6">
+                        <Search 
+                            onSelectEvent={handleEventSelection} 
+                            setShowGlobe={setShowGlobe}
+                        />
+                    </CardContent>
+                </Card>
+
+                <div className="relative">
+                    {contentSections.length > 0 && !isLoading && (
                         <motion.div 
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="text-center mb-12"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: showContent ? 1 : 0 }}
+                            className="mt-8"
                         >
-                            <h1 className="text-5xl font-bold mb-4" style={{ color: '#2C1810' }}>
-                                Virtual Historical Time Machine
-                            </h1>
-                            <p className="text-lg" style={{ color: '#8B4513' }}>
-                                Journey through time and explore historical events
-                            </p>
-                        </motion.div>
-                        
-                        <Card className="mb-8" style={{ backgroundColor: '#FFF8DC', borderColor: '#D4AF37' }}>
-                            <CardContent className="pt-6">
-                                <Search 
-                                    onSelectEvent={handleEventSelection} 
-                                    setShowGlobe={setShowGlobe}
-                                />
-                            </CardContent>
-                        </Card>
-                        
-                        {isLoading && (
-                            <motion.div 
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="text-center mt-8"
-                            >
-                                <Card className="p-8" style={{ backgroundColor: '#FFF8DC' }}>
-                                    <CardContent className="flex flex-col items-center gap-4">
-                                        <Loader2 className="h-8 w-8 animate-spin" style={{ color: '#8B4513' }} />
-                                        <p className="text-lg" style={{ color: '#2C1810' }}>
-                                            Preparing your historical journey...
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        )}
-
-                        {error && (
-                            <motion.div 
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="mt-8"
-                            >
-                                <Card className="border-red-500" style={{ backgroundColor: '#FFF8DC' }}>
-                                    <CardContent className="p-6 text-center text-red-600">
-                                        {error}
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        )}
-
-                        {contentSections.length > 0 && !isLoading && (
-                            <motion.div 
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="mt-8"
-                            >
-                                <Card className="shadow-lg" style={{ backgroundColor: '#FFF8DC', borderColor: '#D4AF37' }}>
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
-                                        <CardTitle className="text-3xl font-bold" style={{ color: '#2C1810' }}>
-                                            {selectedEvent?.replace(/_/g, " ")}
-                                        </CardTitle>
+                            <Card className="shadow-lg" style={{ backgroundColor: '#FFF8DC', borderColor: '#D4AF37' }}>
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
+                                    <CardTitle className="text-3xl font-bold" style={{ color: '#2C1810' }}>
+                                        {selectedEvent?.replace(/_/g, " ")}
+                                    </CardTitle>
+                                    <div className="flex items-center gap-2">
+                                        <Button
+                                            onClick={handlePrevSection}
+                                            disabled={isNarrating || activeSection === 0}
+                                            variant="outline"
+                                            size="icon"
+                                            style={{
+                                                backgroundColor: '#2C1810',
+                                                color: '#FFF8DC'
+                                            }}
+                                        >
+                                            <ChevronLeft className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                            onClick={handleNextSection}
+                                            disabled={isNarrating || activeSection === contentSections.length - 1}
+                                            variant="outline"
+                                            size="icon"
+                                            style={{
+                                                backgroundColor: '#2C1810',
+                                                color: '#FFF8DC'
+                                            }}
+                                        >
+                                            <ChevronRight className="h-4 w-4" />
+                                        </Button>
                                         <Button
                                             onClick={toggleNarration}
                                             variant={isNarrating ? "destructive" : "default"}
-                                            className="px-6"
+                                            size="icon"
                                             style={{
                                                 backgroundColor: isNarrating ? '#8B4513' : '#2C1810',
                                                 color: '#FFF8DC'
                                             }}
                                         >
-                                            {isNarrating ? 'Stop Narration' : 'Start Narration'}
+                                            {isNarrating ? (
+                                                <Pause className="h-4 w-4" />
+                                            ) : (
+                                                <Play className="h-4 w-4" />
+                                            )}
                                         </Button>
-                                    </CardHeader>
+                                    </div>
+                                </CardHeader>
 
-                                    <CardContent>
-                                        <div 
-                                            ref={contentContainerRef}
-                                            className="relative h-[70vh] overflow-hidden rounded-lg"
-                                            style={{ backgroundColor: '#F5E6D3' }}
-                                        >
-                                            <AnimatePresence mode="wait">
-                                                <motion.div
-                                                    key={activeSection}
-                                                    initial={{ x: '100%' }}
-                                                    animate={{ x: 0 }}
-                                                    exit={{ x: '-100%' }}
-                                                    transition={{ type: 'tween', duration: 0.5 }}
-                                                    className="absolute top-0 left-0 w-full h-full p-6"
-                                                >
-                                                    {contentSections[activeSection]?.type === 'text' && (
-                                                        <div className="prose max-w-none">
-                                                            <p className="text-lg leading-relaxed" style={{ color: '#2C1810' }}>
-                                                                {contentSections[activeSection].content}
-                                                            </p>
-                                                        </div>
-                                                    )}
+                                <CardContent>
+                                    <div 
+                                        ref={contentContainerRef}
+                                        className="relative h-[70vh] overflow-hidden rounded-lg"
+                                        style={{ backgroundColor: '#F5E6D3' }}
+                                    >
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key={activeSection}
+                                                initial={{ x: '100%' }}
+                                                animate={{ x: 0 }}
+                                                exit={{ x: '-100%' }}
+                                                transition={{ type: 'tween', duration: 0.5 }}
+                                                className="absolute top-0 left-0 w-full h-full p-6"
+                                            >
+                                                {contentSections[activeSection]?.type === 'text' && (
+                                                    <div className="prose max-w-none">
+                                                        <p className="text-lg leading-relaxed" style={{ color: '#2C1810' }}>
+                                                            {contentSections[activeSection].content}
+                                                        </p>
+                                                    </div>
+                                                )}
 
-                                                    {contentSections[activeSection]?.type === 'image' && 
-                                                     contentSections[activeSection].mediaUrl && (
-                                                        <div className="flex items-center justify-center h-full">
-                                                            <img
-                                                                src={contentSections[activeSection].mediaUrl}
-                                                                alt={contentSections[activeSection].content}
-                                                                className="max-h-[50vh] w-auto object-contain rounded-lg shadow-xl"
-                                                            />
-                                                        </div>
-                                                    )}
+                                                {contentSections[activeSection]?.type === 'image' && 
+                                                 contentSections[activeSection].mediaUrl && (
+                                                    <div className="flex items-center justify-center h-full">
+                                                        <img
+                                                            src={contentSections[activeSection].mediaUrl}
+                                                            alt={contentSections[activeSection].content}
+                                                            className="max-h-[50vh] w-auto object-contain rounded-lg shadow-xl"
+                                                        />
+                                                    </div>
+                                                )}
 
-                                                    {contentSections[activeSection]?.type === 'video' && 
-                                                     contentSections[activeSection].mediaUrl && (
-                                                        <div className="flex items-center justify-center h-full">
-                                                            <iframe
-                                                                width="560"
-                                                                height="315"
-                                                                src={`https://www.youtube.com/embed/${contentSections[activeSection].mediaUrl}`}
-                                                                title={contentSections[activeSection].content}
-                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                                allowFullScreen
-                                                                className="rounded-lg shadow-xl"
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </motion.div>
-                                            </AnimatePresence>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        )}
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                                                {contentSections[activeSection]?.type === 'video' && 
+                                                 contentSections[activeSection].mediaUrl && (
+                                                    <div className="flex items-center justify-center h-full">
+                                                        <iframe
+                                                            width="560"
+                                                            height="315"
+                                                            src={`https://www.youtube.com/embed/${contentSections[activeSection].mediaUrl}`}
+                                                            title={contentSections[activeSection].content}
+                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                            allowFullScreen
+                                                            className="rounded-lg shadow-xl"
+                                                        />
+                                                    </div>
+                                                )}
+                                            </motion.div>
+                                        </AnimatePresence>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </motion.div>
+                    )}
+
+                    {showGlobe && (
+                        <div className="absolute inset-0 z-50" style={{ height: '70vh' }}>
+                            <Globe onAnimationComplete={handleGlobeAnimationComplete} />
+                            </div>
+                    )}
+
+                    {isLoading && !showGlobe && (
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="text-center mt-8"
+                        >
+                            <Card className="p-8" style={{ backgroundColor: '#FFF8DC' }}>
+                                <CardContent className="flex flex-col items-center gap-4">
+                                    <Loader2 className="h-8 w-8 animate-spin" style={{ color: '#8B4513' }} />
+                                    <p className="text-lg" style={{ color: '#2C1810' }}>
+                                        Preparing your historical journey...
+                                    </p>
+                                </CardContent>
+                            </Card>
+                        </motion.div>
+                    )}
+
+                    {error && (
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="mt-8"
+                        >
+                            <Card className="border-red-500" style={{ backgroundColor: '#FFF8DC' }}>
+                                <CardContent className="p-6 text-center text-red-600">
+                                    {error}
+                                </CardContent>
+                            </Card>
+                        </motion.div>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
