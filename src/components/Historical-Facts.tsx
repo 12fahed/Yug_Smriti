@@ -1,79 +1,72 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Card } from "@/components/ui/card"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { X, BookOpen } from "lucide-react"
+import { X, Scroll } from "lucide-react"
 
 const historicalFacts = [
-  {
-    fact: "The Great Wall of China took over 2000 years to build",
-    year: "220 BCE - 1644 CE",
-  },
-  {
-    fact: "Ancient Romans used urine as mouthwash",
-    year: "1st century CE",
-  },
-  {
-    fact: "The Indus Valley Civilization had an advanced drainage system as early as 3000 BCE",
-    year: "3000 BCE",
-  },
-  {
-    fact: "Cleopatra lived closer in time to the first Pizza Hut than to the building of the Great Pyramids",
-    year: "69-30 BCE",
-  },
-  {
-    fact: "The Ancient Indian practice of surgery began around 800 BCE, with detailed medical texts",
-    year: "800 BCE",
-  },
+  "The Great Wall of China took over 2000 years to build",
+  "Ancient Egyptians invented the 365-day calendar",
+  "The Roman Empire lasted for over 1000 years",
+  "The printing press was invented around 1440",
 ]
 
 export function HistoricalFact() {
-  const [fact, setFact] = useState(historicalFacts[0])
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    if (isVisible) {
-      const interval = setInterval(() => {
-        const randomIndex = Math.floor(Math.random() * historicalFacts.length)
-        setFact(historicalFacts[randomIndex])
-      }, 10000)
-
-      return () => clearInterval(interval)
-    }
-  }, [isVisible])
+  const [isVisible, setIsVisible] = useState(true)
+  const [fact] = useState(() => {
+    return historicalFacts[Math.floor(Math.random() * historicalFacts.length)]
+  })
 
   if (!isVisible) {
     return (
       <Button
+        className="fixed bottom-4 right-4 bg-[#8B4513] hover:bg-[#D4AF37] text-[#F5E6D3]"
         onClick={() => setIsVisible(true)}
-        className="fixed bottom-4 right-4 bg-amber-700 text-white hover:bg-amber-800 z-50"
       >
-        <BookOpen className="h-4 w-4 mr-2" />
-        Historical Fact
+        <Scroll className="h-4 w-4 mr-2" />
+        Show Historical Fact
       </Button>
     )
   }
 
   return (
-    <Card className="fixed bottom-4 right-4 w-80 bg-[url('https://img.freepik.com/free-vector/realistic-burned-paper-texture_52683-73921.jpg?semt=ais_incoming')] bg-center text-stone-100 p-6 shadow-xl border-none animate-in slide-in-from-right z-50">
-      <div className="bg-black/30 -m-6 p-6">
-        <div className="flex justify-between items-start mb-4">
-          <h3 className="text-lg font-serif">On This Day in History...</h3>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-6 w-6 text-stone-100 hover:text-stone-100 hover:bg-white/20"
-            onClick={() => setIsVisible(false)}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
+    <div className="fixed bottom-4 right-4 max-w-sm">
+      <div
+        className="relative p-6 rounded-lg"
+        style={{
+          backgroundImage: `url('/paper2.png')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          clipPath: `polygon(
+            0% 0%, 
+            100% 2%, 
+            98% 100%, 
+            2% 98%
+          )`,
+          filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))",
+        }}
+      >
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-2 right-2 hover:bg-[#2C1810]/20"
+          onClick={() => setIsVisible(false)}
+        >
+          <X className="h-4 w-4 text-[#2C1810]" />
+        </Button>
+
+        <div
+          className="historical-fact-content"
+          style={{
+            backgroundImage:
+              "linear-gradient(45deg, transparent 25%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.05) 50%, transparent 50%, transparent 75%, rgba(0,0,0,0.05) 75%)",
+          }}
+        >
+          <h4 className="text-lg font-bold text-[#2C1810] mb-2">Historical Fact of the Moment</h4>
+          <p className="text-[#2C1810] pr-6">{fact}</p>
         </div>
-        <p className="text-sm mb-2">{fact.fact}</p>
-        <p className="text-xs text-stone-300">{fact.year}</p>
       </div>
-    </Card>
+    </div>
   )
 }
 
