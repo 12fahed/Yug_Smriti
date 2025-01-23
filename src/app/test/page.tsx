@@ -36,8 +36,6 @@ const historicalPeriods = [
 ]
 
 export default function LandingPage() {
-  const [isOpen, setIsOpen] = useState(false)
-
   return (
     <div className="flex flex-col min-h-screen bg-[#F9F7F4]">
       <header className="fixed w-full px-4 lg:px-6 h-16 flex items-center justify-between border-b border-stone-200 bg-[#F9F7F4]/80 backdrop-blur-sm z-50">
@@ -130,6 +128,7 @@ export default function LandingPage() {
       </main>
       <HistoricalFact />
     </div>
-  )
-}
+  );
+};
 
+export default Home;
