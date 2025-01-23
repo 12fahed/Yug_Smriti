@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -15,125 +15,226 @@ interface Scenario {
 
 interface Character {
   name: string;
+  title: string;
   scenarios: Scenario[];
 }
+
+const TypewriterText: React.FC<{ text: string; onComplete: () => void }> = ({ text, onComplete }) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const [isTyping, setIsTyping] = useState(true);
+  
+  useEffect(() => {
+    setDisplayedText('');
+    setIsTyping(true);
+    let currentIndex = 0;
+    
+    const interval = setInterval(() => {
+      if (currentIndex < text.length) {
+        setDisplayedText(text.slice(0, currentIndex + 1));
+        currentIndex++;
+      } else {
+        clearInterval(interval);
+        setIsTyping(false);
+        onComplete();
+      }
+    }, 30);
+    
+    return () => clearInterval(interval);
+  }, [text, onComplete]);
+
+  return <p className="text-xl text-[#2C1810] min-h-[8rem]">{displayedText}</p>;
+};
 
 const characters: Character[] = [
   {
     name: 'Mahatma Gandhi',
+    title: 'Father of the Nation',
     scenarios: [
       {
         id: 0,
-        question: "You are young Gandhi in South Africa. How do you respond to being thrown off a train despite having a first-class ticket?",
+        question: "South Africa, 1893. After being forcibly thrown from a first-class train compartment at Pietermaritzburg station, you stand shivering in the cold night. This moment of humiliation will shape your future path. What do you choose?",
         options: [
-          "Practice non-violent resistance and fight for rights legally",
-          "Retaliate with physical force",
-          "Leave South Africa immediately",
-          "Comply and travel in third class"
+          "Use nonviolence to fight injustice",
+          "Protest with force",
+          "Return to India",
+          "Accept and stay quiet"
         ],
         correctOption: 0,
         nextScenario: 1,
         wrongPath: 5,
-        consequence: "Your choice to fight peacefully begins a lifelong journey of non-violent resistance."
+        consequence: "Your choice of peaceful resistance becomes Satyagraha."
       },
       {
         id: 1,
-        question: "British authorities have imposed the Salt Tax. What action do you take?",
+        question: "India, 1930. The British Salt Laws have created an oppressive monopoly on salt production, affecting millions of poor Indians. The Congress looks to you for direction on challenging this unjust law. How will you respond?",
         options: [
-          "Lead the Salt March to produce salt",
-          "Pay the tax quietly",
-          "Organize violent protests",
-          "Leave India in protest"
+          "March to make salt",
+          "Call for uprising",
+          "Private negotiations",
+          "Accept the law"
         ],
         correctOption: 0,
         nextScenario: 2,
         wrongPath: 6,
-        consequence: "The Salt March becomes a pivotal moment in India's freedom struggle."
+        consequence: "The Salt March ignites nationwide civil disobedience."
       },
       {
         id: 2,
-        question: "The British have proposed dividing India during independence. Your response?",
+        question: "1942. With World War II raging, the British have rejected Indian independence. The Congress awaits your guidance while the nation stands at a crucial crossroads. What path will you choose?",
         options: [
-          "Advocate for united India through fasting and peaceful negotiations",
-          "Accept partition immediately",
-          "Call for armed resistance",
-          "Reject independence entirely"
+          "Launch Quit India Movement",
+          "Wait for war to end",
+          "Accept partial freedom",
+          "Armed resistance"
         ],
         correctOption: 0,
         nextScenario: 3,
         wrongPath: 7,
-        consequence: "Your commitment to peace influences the independence process."
+        consequence: "Quit India becomes a powerful mass movement."
       },
       {
         id: 3,
-        question: "Hindu-Muslim riots have broken out. What do you do?",
+        question: "1946. Religious tensions are escalating between Hindu and Muslim communities. Violence has erupted in Calcutta, threatening to spread across India. The nation's unity hangs by a thread. How will you respond?",
         options: [
-          "Fast until the violence stops",
-          "Support one community over another",
-          "Leave the area",
-          "Call for military intervention"
+          "Fast for unity",
+          "Support partition",
+          "Take political sides",
+          "Leave for ashram"
+        ],
+        correctOption: 0,
+        nextScenario: 4,
+        wrongPath: 8,
+        consequence: "Your fast helps calm communal tensions in Bengal."
+      },
+      {
+        id: 4,
+        question: "1947. India has gained independence, but the joy is marred by widespread violence during partition. Communities that lived together for centuries are now turning against each other. What action will you take?",
+        options: [
+          "Walk through riot areas",
+          "Stay in Delhi",
+          "Guard Hindu temples",
+          "Protect only Congress"
         ],
         correctOption: 0,
         nextScenario: null,
-        wrongPath: 8,
-        consequence: "Your fast helps bring peace between communities."
+        wrongPath: 9,
+        consequence: "Your presence brings peace to troubled areas."
       },
-      // Wrong path scenarios
       {
         id: 5,
-        question: "Your violent response has led to arrest. What now?",
+        question: "1947. As religious riots spread across the newly formed nations, millions are displaced and thousands killed. The dream of peaceful independence seems to be slipping away. How do you respond?",
         options: [
-          "Continue fighting physically",
-          "Accept defeat",
-          "Seek revenge",
-          "Reflect on non-violence"
+          "Fast for peace",
+          "Accept division",
+          "Choose sides",
+          "Leave India"
         ],
-        correctOption: 3,
-        nextScenario: null,
+        correctOption: 0,
+        nextScenario: 4,
         wrongPath: null,
-        consequence: "The path of violence leads to a cycle of retaliation."
+        consequence: "Your fast helps restore sanity amid chaos."
       },
       {
         id: 6,
-        question: "The Salt Tax remains, weakening the independence movement. Your next move?",
+        question: "1948. The violence following partition continues unabated. Your philosophy of nonviolence is being tested as never before. You must decide how to address this growing crisis.",
         options: [
-          "Give up the fight",
-          "Join the British government",
-          "Leave India",
-          "Reconsider peaceful protest"
+          "Preach nonviolence",
+          "Support police action",
+          "Ignore the issue",
+          "Blame others"
         ],
-        correctOption: 3,
-        nextScenario: null,
+        correctOption: 0,
+        nextScenario: 3,
         wrongPath: null,
-        consequence: "Compliance with unjust laws strengthens colonial rule."
+        consequence: "Your message of peace reaches troubled hearts."
       },
       {
         id: 7,
-        question: "Violence erupts during partition. Your final decision?",
+        question: "The newly independent India faces severe internal divisions along linguistic and regional lines. Some predict the nation's imminent collapse. As a moral leader, how do you guide the nation?",
         options: [
-          "Continue supporting violence",
-          "Leave India forever",
-          "Embrace non-violence now",
-          "Accept defeat"
+          "Unite through peace",
+          "Military control",
+          "Regional autonomy",
+          "Strict borders"
         ],
-        correctOption: 2,
-        nextScenario: null,
+        correctOption: 0,
+        nextScenario: 4,
         wrongPath: null,
-        consequence: "The violence of partition shows the importance of peaceful resistance."
+        consequence: "Unity through peaceful means prevails."
       },
       {
         id: 8,
-        question: "The riots worsen. What is your last action?",
+        question: "Communal tensions have reached a boiling point, threatening to tear apart the fabric of the nation. Your lifelong principles of nonviolence and Hindu-Muslim unity are being challenged. What will you do?",
         options: [
-          "Give up on peace",
-          "Try one last fast",
-          "Leave India",
-          "Join the fighting"
+          "March for harmony",
+          "Enforce separation",
+          "Choose majority",
+          "Flee violence"
         ],
-        correctOption: 1,
+        correctOption: 0,
+        nextScenario: 4,
+        wrongPath: null,
+        consequence: "Your march brings communities together."
+      }
+    ]
+  },
+  {
+    name: 'Sardar Vallabhbhai Patel',
+    title: 'Iron Man of India',
+    scenarios: [
+      {
+        id: 0,
+        question: "1947. As the first Deputy Prime Minister of independent India, you face the mammoth task of integrating 562 princely states. The Nizam of Hyderabad refuses to join the Indian Union. What's your approach?",
+        options: [
+          "Launch Operation Polo",
+          "Offer more autonomy",
+          "Accept independence",
+          "Delay decision"
+        ],
+        correctOption: 0,
         nextScenario: null,
         wrongPath: null,
-        consequence: "The path of violence only leads to more suffering."
+        consequence: "Hyderabad successfully integrates into India."
+      }
+    ]
+  },
+  {
+    name: 'Dr. B.R. Ambedkar',
+    title: 'Father of Indian Constitution',
+    scenarios: [
+      {
+        id: 0,
+        question: "1927. The practice of untouchability continues to oppress millions. The traditional Hindu leadership resists change. As a leader of the depressed classes, how do you challenge this ancient system?",
+        options: [
+          "Launch Mahad Satyagraha",
+          "Accept gradual change",
+          "Armed rebellion",
+          "Await reforms"
+        ],
+        correctOption: 0,
+        nextScenario: null,
+        wrongPath: null,
+        consequence: "The movement inspires millions to fight caste discrimination."
+      }
+    ]
+  },
+  {
+    name: 'Subhas Chandra Bose',
+    title: 'Netaji',
+    scenarios: [
+      {
+        id: 0,
+        question: "1941. World War II rages on and Britain refuses to promise Indian independence. You've escaped British surveillance and reached Germany. How will you fight for India's freedom?",
+        options: [
+          "Form Azad Hind Fauj",
+          "Return to Congress",
+          "Stay in Britain",
+          "Choose neutrality"
+        ],
+        correctOption: 0,
+        nextScenario: null,
+        wrongPath: null,
+        consequence: "The Indian National Army becomes a symbol of resistance."
       }
     ]
   }
@@ -145,6 +246,7 @@ const Game: React.FC = () => {
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [isVictory, setIsVictory] = useState<boolean>(false);
   const [consequence, setConsequence] = useState<string>("");
+  const [showOptions, setShowOptions] = useState<boolean>(false);
 
   const startGame = (character: Character) => {
     setSelectedCharacter(character);
@@ -152,6 +254,7 @@ const Game: React.FC = () => {
     setGameOver(false);
     setIsVictory(false);
     setConsequence("");
+    setShowOptions(false);
   };
 
   const handleAnswer = (selectedAnswer: number) => {
@@ -159,135 +262,142 @@ const Game: React.FC = () => {
 
     const scenario = selectedCharacter.scenarios[currentScenario];
     const isCorrect = selectedAnswer === scenario.correctOption;
-
+    setShowOptions(false);
     setConsequence(scenario.consequence || "");
 
-    if (isCorrect) {
-      if (scenario.nextScenario !== null) {
-        setCurrentScenario(scenario.nextScenario);
+    setTimeout(() => {
+      if (isCorrect) {
+        if (scenario.nextScenario !== null) {
+          setCurrentScenario(scenario.nextScenario);
+        } else {
+          setGameOver(true);
+          setIsVictory(true);
+        }
       } else {
-        setGameOver(true);
-        setIsVictory(true);
+        if (scenario.wrongPath !== null) {
+          setCurrentScenario(scenario.wrongPath);
+        } else {
+          setGameOver(true);
+          setIsVictory(false);
+        }
       }
-    } else {
-      if (scenario.wrongPath !== null) {
-        setCurrentScenario(scenario.wrongPath);
-      } else {
-        setGameOver(true);
-        setIsVictory(false);
-      }
-    }
+    }, 1500);
   };
 
-  const GameOver: React.FC = () => (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-1/2"
-    >
-      <Card className="bg-[#FFF8DC] shadow-lg rounded-lg">
-        <h1 className="bg-[#2C1810] text-[#F5E6D3] text-center py-6 text-3xl font-bold">
-          {isVictory ? "Victory!" : "Game Over"}
-        </h1>
-        <CardContent className="p-8">
-          <p className="text-lg mb-6 text-[#2C1810]">
-            {isVictory 
-              ? "You have successfully followed the path of non-violence and wisdom!"
-              : "Your choices led to a different outcome. Try again to discover the path of peace."}
-          </p>
-          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-            <Button 
-              className="bg-[#8B4513] hover:bg-[#2C1810] text-[#F5E6D3] w-full transition-colors duration-300"
-              onClick={() => {
-                setGameOver(false);
-                setSelectedCharacter(null);
-              }}
-            >
-              Play Again
-            </Button>
-          </motion.div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-
   const mainContent = () => {
-    if (gameOver) return <GameOver />;
+    if (gameOver) {
+      return (
+        <Card className="bg-[#FFF8DC] shadow-lg rounded-lg">
+          <h1 className="bg-[#2C1810] text-[#F5E6D3] text-center py-6 text-3xl font-bold">
+            {isVictory ? "Victory!" : "Game Over"}
+          </h1>
+          <CardContent className="p-8">
+            <p className="text-lg mb-6 text-[#2C1810]">
+              {isVictory 
+                ? "You have successfully followed the path of wisdom and righteousness!"
+                : "History took a different turn. Try again to discover the path of truth."}
+            </p>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button 
+                className="bg-[#8B4513] hover:bg-[#2C1810] text-[#F5E6D3] w-full transition-colors duration-300"
+                onClick={() => {
+                  setGameOver(false);
+                  setSelectedCharacter(null);
+                }}
+              >
+                Play Again
+              </Button>
+            </motion.div>
+          </CardContent>
+        </Card>
+      );
+    }
+
     if (!selectedCharacter) {
       return (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-1/2"
-        >
-          <Card className="bg-[#FFF8DC] shadow-lg rounded-lg">
-            <h1 className="bg-[#2C1810] text-[#F5E6D3] text-center py-6 text-3xl font-bold">
-              Choose Your <span className="text-[#D4AF37]">Historical</span> Journey
-            </h1>
-            <CardContent className="p-8">
-              {characters.map((character, index) => (
-                <motion.div
-                  key={index}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="mb-4"
+        <Card className="bg-[#FFF8DC] shadow-lg rounded-lg">
+          <h1 className="bg-[#2C1810] text-[#F5E6D3] text-center py-6 text-3xl font-bold">
+            Choose Your <span className="text-[#D4AF37]">Historical</span> Journey
+          </h1>
+          <CardContent className="p-8">
+            {characters.map((character, index) => (
+              <motion.div
+                key={index}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="mb-4"
+              >
+                <Button 
+                  className="bg-[#8B4513] hover:bg-[#2C1810] text-[#F5E6D3] w-full transition-colors duration-300"
+                  onClick={() => startGame(character)}
+                  disabled={character.scenarios.length === 0}
                 >
-                  <Button 
-                    className="bg-[#8B4513] hover:bg-[#2C1810] text-[#F5E6D3] w-full transition-colors duration-300"
-                    onClick={() => startGame(character)}
-                  >
-                    {character.name}
-                  </Button>
-                </motion.div>
-              ))}
-            </CardContent>
-          </Card>
-        </motion.div>
+                  <div>
+                    <div>{character.name}</div>
+                    <div className="text-sm opacity-80">{character.title}</div>
+                  </div>
+                </Button>
+              </motion.div>
+            ))}
+          </CardContent>
+        </Card>
       );
     }
 
     const scenario = selectedCharacter.scenarios[currentScenario];
     return (
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-1/2"
-      >
-        <Card className="bg-[#FFF8DC] shadow-lg rounded-lg">
-          <h1 className="bg-[#2C1810] text-[#F5E6D3] text-center py-6 text-3xl font-bold">
-            {selectedCharacter.name}
-          </h1>
-          <CardContent className="p-8">
-            <p className="text-xl mb-8 text-[#2C1810]">{scenario.question}</p>
-            {consequence && (
-              <p className="text-[#D4AF37] mb-6 italic">{consequence}</p>
-            )}
-            <div className="space-y-4">
-              {scenario.options.map((option, index) => (
-                <motion.div
-                  key={index}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Button 
-                    className="bg-[#8B4513] hover:bg-[#2C1810] text-[#F5E6D3] w-full transition-colors duration-300"
-                    onClick={() => handleAnswer(index)}
+      <Card className="bg-[#FFF8DC] shadow-lg rounded-lg">
+        <h1 className="bg-[#2C1810] text-[#F5E6D3] text-center py-6 text-3xl font-bold">
+          {selectedCharacter.name}
+        </h1>
+        <CardContent className="p-8">
+          <TypewriterText 
+            text={scenario.question} 
+            onComplete={() => setShowOptions(true)}
+          />
+          {consequence && (
+            <p className="text-[#D4AF37] my-6 italic">{consequence}</p>
+          )}
+          <AnimatePresence>
+            {showOptions && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-4 mt-8"
+              >
+                {scenario.options.map((option, index) => (
+                  <motion.div
+                    key={index}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    {option}
-                  </Button>
-                </motion.div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+                    <Button 
+                      className="bg-[#8B4513] hover:bg-[#2C1810] text-[#F5E6D3] w-full transition-colors duration-300"
+                      onClick={() => handleAnswer(index)}
+                    >
+                      {option}
+                    </Button>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </CardContent>
+      </Card>
     );
   };
 
   return (
     <div className="min-h-screen bg-[#F5E6D3] p-8 flex">
-      {mainContent()}
-      <div className="w-1/2 flex items-center justify-center border-l-2 border-[#8B4513]">
+      <div className="w-2/3">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          {mainContent()}
+        </motion.div>
+      </div>
+      <div className="w-1/3 flex items-center justify-center border-l-2 border-[#8B4513] pl-8">
         <p className="text-[#2C1810] text-xl">3D Avatar Space</p>
       </div>
     </div>

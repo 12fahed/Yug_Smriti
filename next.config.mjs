@@ -13,7 +13,13 @@ const nextConfig = {
   },
   webpack: (config) => {
     // Resolve aliases
-    config.resolve.alias["@"] = "/src"; // Adjust the path as needed
+    config.resolve.alias["@"] = "/src";
+
+    // Add support for .glb files
+    config.module.rules.push({
+      test: /\.(glb|gltf)$/,
+      type: 'asset/resource'
+    });
 
     return config;
   },
