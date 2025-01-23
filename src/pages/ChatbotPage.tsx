@@ -1,4 +1,4 @@
-import ChatBot from '../../components/Chatbot';
+import ChatBot from '../components/Chatbot';
 
 const HomePage = () => {
   return (
