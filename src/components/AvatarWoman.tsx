@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import { useGraph, ThreeElements } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
@@ -32,7 +33,7 @@ type GLTFResult = {
 }
 
 export function FemaleAvatar(props: ThreeElements['group']) {
-  const { nodes, materials } = useGLTF('/6791aecd42932506adc3ad13.glb') as unknown as GLTFResult
+  const { nodes, materials } = useGLTF('/models/6791aecd42932506adc3ad13.glb', true) as unknown as GLTFResult
   const clone = React.useMemo(() => SkeletonUtils.clone(nodes.Hips.parent!), [nodes.Hips])
   const { nodes: clonedNodes } = useGraph(clone)
 
@@ -105,4 +106,4 @@ export function FemaleAvatar(props: ThreeElements['group']) {
   )
 }
 
-useGLTF.preload('/6791aecd42932506adc3ad13.glb')
+useGLTF.preload('/models/6791aecd42932506adc3ad13.glb')

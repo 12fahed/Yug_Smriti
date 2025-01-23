@@ -15,6 +15,8 @@ const nextConfig = {
     // Resolve aliases
     config.resolve.alias["@"] = "/src";
 
+    config.resolve.extensions.push('.glb')
+
     // Add support for .glb files
     config.module.rules.push({
       test: /\.(glb|gltf)$/,

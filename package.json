@@ -47,6 +47,7 @@
     "@tsparticles/all": "^3.7.1",
     "@tsparticles/engine": "^3.7.1",
     "@tsparticles/react": "^3.0.0",
+    "@types/three": "^0.172.0",
     "class-variance-authority": "^0.7.0",
     "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
