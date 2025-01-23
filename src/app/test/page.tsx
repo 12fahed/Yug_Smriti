@@ -11,76 +11,98 @@ const cinzel = Cinzel({ subsets: ["latin"], variable: "--font-cinzel" })
 
 export default function LandingPage() {
   return (
-    <div className={`${cinzel.variable} font-sans bg-[#F5E6D3] min-h-screen`}>
-      <Navbar />
-
-      <main>
-        <section className="relative h-[100vh] flex items-center justify-center">
-          <Image
-            src="/hero.jpg"
-            alt="School of Athens"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/50 font-cinzel" />
-          <div className="relative container mx-auto px-4 text-center text-[#F5E6D3]">
-            <h2 className="text-5xl font-bold mb-4 shadow-text">Journey Through Time</h2>
-            <p className="text-xl mb-8 shadow-text">Explore the fascinating stories of our past</p>
-            <div className="inline-block relative">
-              <Image
-                src="/paper2.png"
-                alt="Button background"
-                width={200}
-                height={80}
-                className="w-auto h-[80px]"
-              />
-              <button className="absolute inset-0 flex items-center justify-center text-lg font-bold text-[#2C1810] hover:text-[#8B4513] transition-colors">
-                Explore
-              </button>
+    <div className="flex flex-col min-h-screen bg-[#F9F7F4]">
+      <header className="fixed w-full px-4 lg:px-6 h-16 flex items-center justify-between border-b border-stone-200 bg-[#F9F7F4]/80 backdrop-blur-sm z-50">
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <MenuIcon className="h-6 w-6 text-stone-600" />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[300px] sm:w-[400px] bg-[#F9F7F4]">
+            <nav className="flex flex-col space-y-4 mt-6">
+              <Link
+                href="#"
+                className="flex items-center text-lg font-medium text-stone-600 hover:text-stone-900"
+                onClick={() => setIsOpen(false)}
+              >
+                <Home className="mr-2 h-5 w-5" />
+                Home
+              </Link>
+              <Link
+                href="#"
+                className="flex items-center text-lg font-medium text-stone-600 hover:text-stone-900"
+                onClick={() => setIsOpen(false)}
+              >
+                <Clock className="mr-2 h-5 w-5" />
+                Time Periods
+              </Link>
+              <Link
+                href="#"
+                className="flex items-center text-lg font-medium text-stone-600 hover:text-stone-900"
+                onClick={() => setIsOpen(false)}
+              >
+                <Book className="mr-2 h-5 w-5" />
+                Historical Events
+              </Link>
+              <Link
+                href="#"
+                className="flex items-center text-lg font-medium text-stone-600 hover:text-stone-900"
+                onClick={() => setIsOpen(false)}
+              >
+                <Users className="mr-2 h-5 w-5" />
+                Historical Figures
+              </Link>
+              <Link
+                href="#"
+                className="flex items-center text-lg font-medium text-stone-600 hover:text-stone-900"
+                onClick={() => setIsOpen(false)}
+              >
+                <Info className="mr-2 h-5 w-5" />
+                About
+              </Link>
+            </nav>
+          </SheetContent>
+        </Sheet>
+        <div className="mx-auto">
+          <h1 className="text-xl font-serif text-stone-800 tracking-wide">THE VIRTUAL TIME MACHINE</h1>
+          <p className="text-xs text-center text-stone-500 tracking-widest">HISTORICAL EXPLORATION</p>
+        </div>
+        <Button variant="outline" className="bg-amber-700 text-white hover:bg-amber-800">
+          Sign Up
+        </Button>
+      </header>
+      <main className="flex-1">
+        {historicalPeriods.map((period, index) => (
+          <ParallaxSection key={period.title} period={period} />
+        ))}
+        <section className="bg-stone-100 py-16">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-serif text-center mb-8">Explore the Past Like Never Before</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <Globe className="h-12 w-12 mx-auto mb-4 text-amber-700" />
+                <h3 className="text-xl font-serif mb-2">Interactive Time Travel</h3>
+                <p>Experience history firsthand through our revolutionary virtual reality technology.</p>
+              </div>
+              <div className="text-center">
+                <Book className="h-12 w-12 mx-auto mb-4 text-amber-700" />
+                <h3 className="text-xl font-serif mb-2">Historical Accuracy</h3>
+                <p>Every detail meticulously researched and recreated by expert historians.</p>
+              </div>
+              <div className="text-center">
+                <Users className="h-12 w-12 mx-auto mb-4 text-amber-700" />
+                <h3 className="text-xl font-serif mb-2">Immersive Learning</h3>
+                <p>Engage with historical figures and participate in pivotal moments of history.</p>
+              </div>
             </div>
           </div>
         </section>
-
-        <FeaturedEras />
-
-        <HistoricalFact />
-        <RotatingWheel />
       </main>
-
-      <footer className="bg-[#2C1810] text-[#F5E6D3] py-8 mt-16">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-4 md:mb-0">
-              <h4 className="text-xl font-semibold mb-2">Chronos Chronicles</h4>
-              <p>Illuminating the past, one story at a time.</p>
-            </div>
-            <nav>
-              <ul className="flex space-x-4">
-                <li>
-                  <Link href="#" className="hover:text-[#D4AF37] transition-colors">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-[#D4AF37] transition-colors">
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-[#D4AF37] transition-colors">
-                    Contact Us
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <div className="mt-8 text-center">
-            <p>&copy; {new Date().getFullYear()} Chronos Chronicles. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <HistoricalFact />
     </div>
-  )
-}
+  );
+};
 
+export default Home;
