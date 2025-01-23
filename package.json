@@ -46,7 +46,12 @@
     "@tsparticles/engine": "^3.7.1",
     "@tsparticles/react": "^3.0.0",
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     "@types/three": "^0.172.0",
+=======
+    "axios": "^1.7.9",
+    "cheerio": "^1.0.0",
+>>>>>>> Stashed changes
 =======
     "axios": "^1.7.9",
     "cheerio": "^1.0.0",
@@ -73,7 +78,11 @@
     "react-file-icon": "^1.5.0",
     "react-hook-form": "^7.53.0",
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     "react-intersection-observer": "^9.15.1",
+=======
+    "react-map-gl": "^7.1.8",
+>>>>>>> Stashed changes
 =======
     "react-map-gl": "^7.1.8",
 >>>>>>> Stashed changes
