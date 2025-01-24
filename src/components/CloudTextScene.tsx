@@ -1,6 +1,9 @@
+"use client"
+
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { Text } from './Text'; // Import the new small component for Kargil War
+
 
 const CloudTextScene: React.FC = () => {
   const mountRef = useRef<HTMLDivElement>(null);

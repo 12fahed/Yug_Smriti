@@ -1,3 +1,6 @@
+"use client"
+
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from "@/components/ui/card";
@@ -398,7 +401,8 @@ const Game: React.FC = () => {
         </motion.div>
       </div>
       <div className="w-1/3 flex items-center justify-center border-l-2 border-[#8B4513] pl-8">
-        <p className="text-[#2C1810] text-xl">3D Avatar Space</p>
+        {/* <p className="text-[#2C1810] text-xl">3D Avatar Space</p> */}
+        <video src="/avatar.mp4" autoPlay loop></video>
       </div>
     </div>
   );

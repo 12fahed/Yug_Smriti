@@ -108,16 +108,19 @@
 // export default Home;
 "use client"
 
-// import MapWithRegions from "@/components/Map-Component"
+import MapWithRegions from "@/components/Map-Component"
 import ThematicTimeline from "@/components/Theme-Page"
-
+import CloudTextScene from "@/components/CloudTextScene"
+import FogOverlay from "@/components/FahedCloud"
+import FogScene from "@/components/FahedCloud"
 export default function Page(){
 
   return(
     <div>
       {/* <MapWithRegions /> */}
       {/* Hello Genius */}
-      <ThematicTimeline />
+      {/* <ThematicTimeline /> */}
+      <FogScene />
     </div>
   )
 

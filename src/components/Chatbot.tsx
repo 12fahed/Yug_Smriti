@@ -1,8 +1,10 @@
 "use client"
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { X, MessageCircle } from "lucide-react";
 
 interface Message {
   sender: "user" | "bot";
@@ -34,6 +36,12 @@ const ChatBot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]); 
   const [loading, setLoading] = useState<boolean>(false); 
   const [selectedCharacter, setSelectedCharacter] = useState<string>(''); 
+  const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
+
+  // Debug useEffect to track state changes
+  useEffect(() => {
+    console.log("Chat open state changed:", isChatOpen);
+  }, [isChatOpen]);
 
   const handleCharacterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newCharacter = e.target.value;
@@ -78,32 +86,76 @@ const ChatBot: React.FC = () => {
     }
   };
 
+  // Explicitly define toggle function with console log
+  const toggleChat = (e?: React.MouseEvent) => {
+    console.log("Toggle chat function called");
+    if (e) {
+      e.stopPropagation(); // Prevent event bubbling
+    }
+    setIsChatOpen(prevState => {
+      console.log("Changing from", prevState, "to", !prevState);
+      return !prevState;
+    });
+  };
+
+  // Floating circle when chat is closed
+  if (!isChatOpen) {
+    return (
+      <div 
+        id="chat-circle"
+        onClick={(e) => {
+          console.log("Circle clicked");
+          toggleChat(e);
+        }}
+        className="fixed bottom-8 right-8 cursor-pointer z-50 
+        bg-[#D4AF37] text-[#2C1810] rounded-full w-16 h-16 
+        flex items-center justify-center shadow-2xl hover:scale-110 transition-transform"
+        style={{zIndex: 9999}} // Explicitly set high z-index
+      >
+        <MessageCircle size={32} />
+      </div>
+    );
+  }
+
+  // Full chat interface when open
   return (
     <div 
-      className="flex flex-col items-center justify-center min-h-screen"
-      style={{ backgroundColor: '#F5E6D3' }} // Antique White background
+      className="fixed bottom-8 right-8 z-50"
+      style={{ 
+        width: '400px', 
+        zIndex: 9999 // Ensure high z-index for full interface
+      }}
     >
       <div 
-        className="w-full max-w-lg p-8 shadow-2xl rounded-2xl"
+        className="w-full p-8 shadow-2xl rounded-2xl relative"
         style={{ 
-          backgroundColor: '#FFF8DC', // Cornsilk card background
-          borderColor: '#8B4513', // Saddle Brown border
-          border: '2px solid' 
+          backgroundColor: '#FFF8DC', 
+          borderColor: '#8B4513', 
+          border: '2px solid',
+          zIndex: 9999 // Consistent z-index
         }}
       >
+        {/* Close Button */}
+        <button 
+          onClick={(e) => toggleChat(e)} 
+          className="absolute top-4 right-4 text-[#2C1810] hover:text-opacity-70 transition-colors"
+        >
+          <X size={24} />
+        </button>
+
         <h1 
           className="text-3xl font-bold text-center mb-6"
-          style={{ color: '#2C1810' }} // Deep Brown text
+          style={{ color: '#2C1810' }}
         >
           Historical Dialogue
         </h1>
 
-        {/* Character Selection */}
+        {/* Character Selection Dropdown */}
         <div className="mb-6">
           <label 
             htmlFor="character" 
             className="block text-lg mb-2"
-            style={{ color: '#2C1810' }} // Deep Brown label
+            style={{ color: '#2C1810' }}
           >
             Choose a Historical Figure:
           </label>
@@ -113,9 +165,9 @@ const ChatBot: React.FC = () => {
             onChange={handleCharacterChange}
             className="w-full p-3 rounded-lg"
             style={{ 
-              backgroundColor: '#F5E6D3', // Antique White select background
-              color: '#2C1810', // Deep Brown text
-              borderColor: '#8B4513', // Saddle Brown border
+              backgroundColor: '#F5E6D3', 
+              color: '#2C1810', 
+              borderColor: '#8B4513' 
             }}
           >
             <option value="">Select a Character</option>
@@ -125,12 +177,12 @@ const ChatBot: React.FC = () => {
           </select>
         </div>
 
-        {/* Chat Messages */}
+        {/* Chat Messages Display */}
         <div 
           className="overflow-y-auto h-64 p-4 rounded-lg mb-6 shadow-inner"
           style={{ 
-            backgroundColor: '#F5E6D3', // Antique White chat background
-            border: '1px solid #8B4513' // Saddle Brown border
+            backgroundColor: '#F5E6D3', 
+            border: '1px solid #8B4513' 
           }}
         >
           {messages.map((message, index) => (
@@ -144,11 +196,11 @@ const ChatBot: React.FC = () => {
                 className="p-3 rounded-lg max-w-xs"
                 style={{
                   backgroundColor: message.sender === "user" 
-                    ? '#D4AF37' // Gold for user messages
-                    : '#8B4513', // Saddle Brown for bot messages
+                    ? '#D4AF37' 
+                    : '#8B4513', 
                   color: message.sender === "user" 
-                    ? '#2C1810'  // Deep Brown text for user
-                    : '#FFF8DC'  // Cornsilk text for bot
+                    ? '#2C1810'  
+                    : '#FFF8DC'  
                 }}
               >
                 {message.text}
@@ -157,7 +209,7 @@ const ChatBot: React.FC = () => {
           ))}
         </div>
 
-        {/* Input Form */}
+        {/* Message Input Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <Textarea
             value={input}
@@ -166,9 +218,9 @@ const ChatBot: React.FC = () => {
             rows={2}
             className="resize-none p-3"
             style={{
-              backgroundColor: '#F5E6D3', // Antique White textarea
-              color: '#2C1810', // Deep Brown text
-              borderColor: '#8B4513' // Saddle Brown border
+              backgroundColor: '#F5E6D3', 
+              color: '#2C1810', 
+              borderColor: '#8B4513' 
             }}
           />
           <Button 
@@ -176,8 +228,8 @@ const ChatBot: React.FC = () => {
             disabled={loading || !selectedCharacter} 
             className="w-full p-3 rounded-lg"
             style={{
-              backgroundColor: '#D4AF37', // Gold button
-              color: '#2C1810', // Deep Brown text
+              backgroundColor: '#D4AF37', 
+              color: '#2C1810', 
               opacity: (loading || !selectedCharacter) ? 0.5 : 1
             }}
           >
