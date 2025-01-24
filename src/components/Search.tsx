@@ -57,7 +57,7 @@ const Search = ({ onSelectEvent, setShowGlobe }: {
   };
 
   return (
-    <div className="relative w-full max-w-lg mx-auto">
+    <div className="relative w-full max-w-lg mx-auto ">
       <input
         type="text"
         value={query}
