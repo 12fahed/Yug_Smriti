@@ -99,34 +99,51 @@
 //             </div>
 //           </div>
 //         </section>
-//       </main>
-//       <HistoricalFact />
-//     </div>
-//   );
-// };
+// //       </main>
+// //       <HistoricalFact />
+// //     </div>
+// //   );
+// // };
 
-// // export default Home;
-// // "use client"
+// // // export default Home;
+// // // "use client"
 
-import MapWithRegions from "@/components/Map-Component"
-import ThematicTimeline from "@/components/Theme-Page"
-import CloudTextScene from "@/components/CloudTextScene"
-import AnimatedClouds from "@/components/What-If-Cloud"
-export default function Page(){
+// import MapWithRegions from "@/components/Map-Component"
+// import ThematicTimeline from "@/components/Theme-Page"
+// import CloudTextScene from "@/components/CloudTextScene"
+// import AnimatedClouds from "@/components/What-If-Cloud"
+// export default function Page(){
 
-//   return(
-//     <div>
-//       {/* <MapWithRegions /> */}
-//       {/* Hello Genius */}
-//       <ThematicTimeline />
-//     </div>
-//   )
+// //   return(
+// //     <div>
+// //       {/* <MapWithRegions /> */}
+// //       {/* Hello Genius */}
+// //       <ThematicTimeline />
+// //     </div>
+// //   )
 
-// // // }
+// // // // }
 
-// // import ChatBot from '../../components/Chatbot';
+// // // import ChatBot from '../../components/Chatbot';
 
-// const HomePage = () => {
+// // const HomePage = () => {
+// //   return (
+// //     <div>
+// //       {/* <MapWithRegions /> */}
+// //       {/* Hello Genius */}
+// //       {/* <ThematicTimeline /> */}
+// //       <AnimatedClouds />
+// //     </div>
+// //   );
+// // };
+
+// // export default HomePage;
+
+// // pages/index.tsx
+// import React from 'react';
+// import ScenarioCard from '../../components/ScenarioCard';
+
+// const Home: React.FC = () => {
 //   return (
 //     <div>
 //       {/* <MapWithRegions /> */}
@@ -137,22 +154,5 @@ export default function Page(){
 //   );
 // };
 
-// export default HomePage;
-
-// pages/index.tsx
-import React from 'react';
-import ScenarioCard from '../../components/ScenarioCard';
-
-const Home: React.FC = () => {
-  return (
-    <div>
-      {/* <MapWithRegions /> */}
-      {/* Hello Genius */}
-      {/* <ThematicTimeline /> */}
-      <AnimatedClouds />
-    </div>
-  );
-};
-
-export default Home;
+// export default Home;
 
