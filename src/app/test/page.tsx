@@ -106,19 +106,32 @@
 // };
 
 // export default Home;
-"use client"
+// "use client"
 
-// import MapWithRegions from "@/components/Map-Component"
-import ThematicTimeline from "@/components/Theme-Page"
+// // import MapWithRegions from "@/components/Map-Component"
+// import ThematicTimeline from "@/components/Theme-Page"
 
-export default function Page(){
+// export default function Page(){
 
-  return(
+//   return(
+//     <div>
+//       {/* <MapWithRegions /> */}
+//       {/* Hello Genius */}
+//       <ThematicTimeline />
+//     </div>
+//   )
+
+// }
+
+import ChatBot from '../../components/Chatbot';
+
+const HomePage = () => {
+  return (
     <div>
-      {/* <MapWithRegions /> */}
-      {/* Hello Genius */}
-      <ThematicTimeline />
-    </div>
-  )
 
-}
+      <ChatBot />
+    </div>
+  );
+};
+
+export default HomePage;

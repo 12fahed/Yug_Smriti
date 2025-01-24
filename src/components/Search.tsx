@@ -1,5 +1,5 @@
-// components/Search.tsx
 import { useState } from "react";
+import { Search as SearchIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 
 // Dynamically import Globe with no SSR
@@ -57,19 +57,27 @@ const Search = ({ onSelectEvent, setShowGlobe }: {
   };
 
   return (
-    <div className="relative w-full max-w-lg mx-auto ">
-      <input
-        type="text"
-        value={query}
-        onChange={handleSearch}
-        placeholder="Search for a historical event..."
-        className="w-full px-4 py-2 border rounded-lg shadow-md focus:outline-none focus:ring-2"
-        style={{ 
-          borderColor: '#D4AF37',
-          backgroundColor: '#FFF8DC',
-          color: '#2C1810'
-        }}
-      />
+    <div className="relative w-full max-w-lg mx-auto">
+      <div className="relative">
+        <input
+          type="text"
+          value={query}
+          onChange={handleSearch}
+          placeholder="Search for a historical event..."
+          className="w-full px-4 py-2 pr-10 border rounded-lg shadow-md focus:outline-none focus:ring-2"
+          style={{ 
+            borderColor: '#D4AF37',
+            backgroundColor: '#FFF8DC',
+            color: '#2C1810'
+          }}
+        />
+        <div 
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+          style={{ color: '#8B4513' }}
+        >
+          <SearchIcon size={20} />
+        </div>
+      </div>
       {filteredEvents.length > 0 && (
         <ul 
           className="absolute z-10 top-12 left-0 w-full max-h-48 overflow-y-auto border rounded-lg shadow-lg"

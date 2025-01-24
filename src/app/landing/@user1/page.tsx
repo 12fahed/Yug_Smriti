@@ -261,7 +261,13 @@ export default function User1() {
     }, [selectedEvent]);
 
     return (
-        <div className="min-h-screen relative" style={{ backgroundColor: '#F5E6D3' }}>
+        <div 
+            className="min-h-screen relative bg-cover bg-repeat" 
+            style={{ 
+                backgroundImage: 'url(/theme-bg.jpg)', 
+                backgroundColor: '#F5E6D3' 
+            }}
+        >
             <div className="container mx-auto py-12 px-4">
                 <motion.div 
                     initial={{ opacity: 0, y: -20 }}
@@ -276,7 +282,13 @@ export default function User1() {
                     </p>
                 </motion.div>
                 
-                <Card className="mb-8" style={{ backgroundColor: '#FFF8DC', borderColor: '#D4AF37' }}>
+                <Card 
+                    className="mb-8" 
+                    style={{ 
+                        backgroundColor: 'transparent', 
+                        boxShadow: 'none' 
+                    }}
+                >
                     <CardContent className="pt-6">
                         <Search 
                             onSelectEvent={handleEventSelection} 
@@ -292,7 +304,7 @@ export default function User1() {
                             animate={{ opacity: showContent ? 1 : 0 }}
                             className="mt-8"
                         >
-                            <Card className="shadow-lg" style={{ backgroundColor: '#FFF8DC', borderColor: '#D4AF37' }}>
+                            <Card className="shadow-lg" style={{ backgroundColor: '#FFF8DC' }}>
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
                                     <CardTitle className="text-3xl font-bold" style={{ color: '#2C1810' }}>
                                         {selectedEvent?.replace(/_/g, " ")}
