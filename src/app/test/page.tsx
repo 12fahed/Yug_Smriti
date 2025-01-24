@@ -108,10 +108,12 @@
 // export default Home;
 // "use client"
 
-// // import MapWithRegions from "@/components/Map-Component"
-// import ThematicTimeline from "@/components/Theme-Page"
-
-// export default function Page(){
+import MapWithRegions from "@/components/Map-Component"
+import ThematicTimeline from "@/components/Theme-Page"
+import CloudTextScene from "@/components/CloudTextScene"
+import FogOverlay from "@/components/FahedCloud"
+import FogScene from "@/components/FahedCloud"
+export default function Page(){
 
 //   return(
 //     <div>
@@ -128,8 +130,10 @@ import ChatBot from '../../components/Chatbot';
 const HomePage = () => {
   return (
     <div>
-
-      <ChatBot />
+      {/* <MapWithRegions /> */}
+      {/* Hello Genius */}
+      {/* <ThematicTimeline /> */}
+      <FogScene />
     </div>
   );
 };

@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react";
 import { Search as SearchIcon } from "lucide-react";
 import dynamic from "next/dynamic";

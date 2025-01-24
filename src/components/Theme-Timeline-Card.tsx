@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { SchemaType } from "@google/generative-ai"
 import { fetchFromGenAI } from "@/lib/genAIClient"
 import vinntage from "/public/vintage.png"
+import pin from "/public/pin.png"
 
 
 interface TimelineEvent {
@@ -98,7 +99,7 @@ const TimelineCard: React.FC<{ event: TimelineEvent; onViewDetails: (event: Time
         <DialogContent 
           className="max-h-[500px] overflow-y-auto" 
           style={{
-            backgroundImage: `url(pin.png)`,
+            backgroundImage: `url(${pin.src})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
