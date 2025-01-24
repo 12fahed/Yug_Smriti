@@ -177,7 +177,7 @@ const MapWithRegions: React.FC = () => {
             position: "fixed",
             top: 0,
             right: 0,
-            width: "500x",
+            width: "500px",
             height: "100vh",
             overflowY: "auto",
             padding: "20px",

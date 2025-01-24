@@ -14,12 +14,14 @@
     "incremental": true,
     "plugins": [
       {
-        "name": "next"
+        "name": "next",
+        
       }
     ],
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "three/examples/*": ["node_modules/three/examples/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/page.jsx","app/layout.jsx", "components/theme-provider.jsx", "components/theme-provider.jsx",],

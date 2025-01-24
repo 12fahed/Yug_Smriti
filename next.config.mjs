@@ -9,11 +9,18 @@ const nextConfig = {
         port: "",
       },
     ],
-    domains: ['res.cloudinary.com', 'images.unsplash.com'],
+    domains: ['res.cloudinary.com', 'images.unsplash.com', 'simple.wikipedia.org', 'upload.wikimedia.org'],
   },
   webpack: (config) => {
     // Resolve aliases
     config.resolve.alias["@"] = "/src"; // Adjust the path as needed
+    config.resolve.extensions.push('.glb')
+
+    // Add support for .glb files
+    config.module.rules.push({
+      test: /\.(glb|gltf)$/,
+      type: 'asset/resource'
+    });
 
     return config;
   },
