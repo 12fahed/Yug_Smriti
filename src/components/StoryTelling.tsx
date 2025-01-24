@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";
 import dynamic from "next/dynamic";
-import FogOverlay from "./FahedCloud";
+import FogOverlay from "./What-If-Cloud";
 
 const Globe = dynamic(() => import('./Globe'), { ssr: false });
 
@@ -48,7 +48,10 @@ interface ContentSection {
     mediaUrl?: string;
 }
 
-export default function StoryTelling() {
+
+const StoryTelling = ({ setEventSelected }: {
+    setEventSelected: (event: string) => void,
+}) => {
     const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
     const [eventDetails, setEventDetails] = useState<any>(null);
     const [youtubeVideos, setYoutubeVideos] = useState<YouTubeItem[]>([]);
@@ -81,6 +84,7 @@ export default function StoryTelling() {
             stopNarration();
         }
         setSelectedEvent(event);
+        setEventSelected(event);
         setEventDetails(null);
         setYoutubeVideos([]);
         setEventImages([]);
@@ -454,3 +458,5 @@ export default function StoryTelling() {
         </div>
     );
 }
+
+export default StoryTelling

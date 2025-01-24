@@ -111,8 +111,7 @@
 import MapWithRegions from "@/components/Map-Component"
 import ThematicTimeline from "@/components/Theme-Page"
 import CloudTextScene from "@/components/CloudTextScene"
-import FogOverlay from "@/components/FahedCloud"
-import FogScene from "@/components/FahedCloud"
+import AnimatedClouds from "@/components/What-If-Cloud"
 export default function Page(){
 
 //   return(
@@ -133,7 +132,7 @@ const HomePage = () => {
       {/* <MapWithRegions /> */}
       {/* Hello Genius */}
       {/* <ThematicTimeline /> */}
-      <FogScene />
+      <AnimatedClouds />
     </div>
   );
 };
