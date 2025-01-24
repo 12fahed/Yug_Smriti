@@ -108,11 +108,11 @@
 // // export default Home;
 // // "use client"
 
-// import MapWithRegions from "@/components/Map-Component"
-// import ThematicTimeline from "@/components/Theme-Page"
-// import CloudTextScene from "@/components/CloudTextScene"
-// import AnimatedClouds from "@/components/What-If-Cloud"
-// export default function Page(){
+import MapWithRegions from "@/components/Map-Component"
+import ThematicTimeline from "@/components/Theme-Page"
+import CloudTextScene from "@/components/CloudTextScene"
+import AnimatedClouds from "@/components/What-If-Cloud"
+export default function Page(){
 
 //   return(
 //     <div>
@@ -145,9 +145,11 @@ import ScenarioCard from '../../components/ScenarioCard';
 
 const Home: React.FC = () => {
   return (
-    <div className="container">
-
-      <ScenarioCard />
+    <div>
+      {/* <MapWithRegions /> */}
+      {/* Hello Genius */}
+      {/* <ThematicTimeline /> */}
+      <AnimatedClouds />
     </div>
   );
 };
