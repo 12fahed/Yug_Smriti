@@ -1,0 +1,11 @@
+Model Information:
+* title:	Ancient_coin_002
+* source:	https://sketchfab.com/3d-models/ancient-coin-002-bb0735545f7242f0b9e57d329c84cf04
+* author:	RadioactiveAG (https://sketchfab.com/RadioactiveAG)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Ancient_coin_002" (https://sketchfab.com/3d-models/ancient-coin-002-bb0735545f7242f0b9e57d329c84cf04) by RadioactiveAG (https://sketchfab.com/RadioactiveAG) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

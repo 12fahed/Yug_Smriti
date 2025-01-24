@@ -105,12 +105,13 @@
 //   );
 // };
 
-// export default Home;
-// "use client"
+// // export default Home;
+// // "use client"
 
-// // import MapWithRegions from "@/components/Map-Component"
+// import MapWithRegions from "@/components/Map-Component"
 // import ThematicTimeline from "@/components/Theme-Page"
-
+// import CloudTextScene from "@/components/CloudTextScene"
+// import AnimatedClouds from "@/components/What-If-Cloud"
 // export default function Page(){
 
 //   return(
@@ -121,17 +122,35 @@
 //     </div>
 //   )
 
-// }
+// // // }
 
-import ChatBot from '../../components/Chatbot';
+// // import ChatBot from '../../components/Chatbot';
 
-const HomePage = () => {
+// const HomePage = () => {
+//   return (
+//     <div>
+//       {/* <MapWithRegions /> */}
+//       {/* Hello Genius */}
+//       {/* <ThematicTimeline /> */}
+//       <AnimatedClouds />
+//     </div>
+//   );
+// };
+
+// export default HomePage;
+
+// pages/index.tsx
+import React from 'react';
+import ScenarioCard from '../../components/ScenarioCard';
+
+const Home: React.FC = () => {
   return (
-    <div>
+    <div className="container">
 
-      <ChatBot />
+      <ScenarioCard />
     </div>
   );
 };
 
-export default HomePage;
+export default Home;
+
