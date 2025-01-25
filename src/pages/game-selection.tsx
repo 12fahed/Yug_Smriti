@@ -28,7 +28,7 @@ export default function GameSelection() {
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className="cursor-pointer"
-            onClick={() => router.push("/rpg-game")}
+            onClick={() => router.push("/postlogin/rpggame")}
           >
             <div
               className="relative min-h-[400px] w-[500px] p-6 rounded-lg shadow-lg"
@@ -55,7 +55,7 @@ export default function GameSelection() {
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className="cursor-pointer"
-            onClick={() => router.push("/other-games")}
+            onClick={() => router.push("/postlogin/scenario")}
           >
             <div
               className="relative min-h-[400px] w-[500px] p-6 rounded-lg shadow-lg"
@@ -67,7 +67,7 @@ export default function GameSelection() {
               }}
             >
               <div className="absolute inset-0 flex flex-col justify-center px-12 py-6">
-                <h2 className="text-4xl font-serif text-[#2C1810] mb-6 text-center">Other Games</h2>
+                <h2 className="text-4xl font-serif text-[#2C1810] mb-6 text-center">Historian&apos;s Challenge</h2>
                 <p className="font-serif text-[#2C1810] leading-relaxed text-center text-xl">
                   Discover a diverse collection of historical challenges and puzzles. From strategic battles to
                   diplomatic negotiations, these games offer unique perspectives on historical events.

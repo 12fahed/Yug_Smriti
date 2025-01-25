@@ -30,7 +30,7 @@ const CoinCanvas: React.FC<{
         border-2 border-[#8B4513] relative overflow-hidden"
       >
         <Canvas>
-          <ambientLight intensity={0.5} />
+          <ambientLight intensity={1.5} />
           <directionalLight position={[0, 5, 5]} intensity={1.2} />
           {isLocked && <OrbitControls enableZoom={false} enablePan={false} />}
           <CoinModel path={path} isLocked={isLocked} />
@@ -72,7 +72,7 @@ const Coin3D: React.FC = () => {
 
   return (
     <div 
-      className="bg-[#F5E6D3] min-h-screen p-8 
+      className="min-h-screen p-8 
       flex flex-col items-center justify-center"
     >
       <h1 

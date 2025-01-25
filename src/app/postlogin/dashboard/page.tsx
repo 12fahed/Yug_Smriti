@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress"
 import { NavMenu } from "@/components/prelogin/nav-menu"
 import { HistoricalCalendar } from "@/components/historical-calendar"
 // import { HistoricalBadges } from "@/components/historical-badges"
+import CoinsPage from "@/pages/coins"
 
 // Mock data remains the same
 const userData = {
@@ -89,6 +90,8 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               {/* <HistoricalBadges userPoints={userData.totalPoints} /> */}
+              <CoinsPage />
+
             </CardContent>
           </Card>
 

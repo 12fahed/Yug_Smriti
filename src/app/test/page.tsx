@@ -156,3 +156,17 @@
 
 // export default Home;
 
+"use client"
+
+import CoinsPage from "@/pages/coins"
+import GameSelection from "@/pages/game-selection"
+
+export default function TestPage(){
+
+    return(
+        <div>
+            <GameSelection />
+        </div>
+    )
+
+}

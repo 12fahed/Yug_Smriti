@@ -322,7 +322,7 @@ const Game: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#E6D5B8] p-8 flex flex-col items-center justify-center bg-[url('/parchment-bg.jpg')] bg-cover">
+    <div className="min-h-screen bg-[#E6D5B8] p-8 flex flex-col items-center justify-center bg-[url('/game-bg.png')] bg-cover">
       <div className="w-full max-w-6xl flex justify-center">
         {!selectedCharacter ? (
           <div className="w-2/3 bg-[rgba(255,248,220,0.9)] border-4 border-[#8B4513] rounded-lg shadow-2xl overflow-hidden">
@@ -353,7 +353,7 @@ const Game: React.FC = () => {
           </>
         )}
       </div>
-      <div className="mt-8 w-full max-w-6xl flex justify-between items-center">
+      {/* <div className="mt-8 w-full max-w-6xl flex justify-between items-center">
         <div className="w-1/3">
           <img src="/ancient-seal.png" alt="Ancient Seal" className="w-24 h-24 opacity-50" />
         </div>
@@ -365,7 +365,7 @@ const Game: React.FC = () => {
         <div className="w-1/3 flex justify-end">
           <img src="/quill.png" alt="Quill" className="w-24 h-24 opacity-50 transform -rotate-45" />
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }

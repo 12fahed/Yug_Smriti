@@ -2,14 +2,14 @@
 
 import Game from "@/pages/Game"
 import { NavMenu } from "@/components/prelogin/nav-menu"
-import GameSelection from "@/pages/game-selection"
 
-export default function StoryTellingPage(){
+
+export default function RPGGAME(){
 
     return(
-        <div>
+        <div>   
             <NavMenu />
-            <GameSelection />
+            <Game />
         </div>
     )
 

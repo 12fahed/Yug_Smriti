@@ -22,8 +22,8 @@ const characterQA: { [key: string]: CharacterQA } = {
     answer: "Namaste"
   },
   nehru: {
-    question: "What does democracy mean to you?",
-    answer: "Democracy is a government of the people, by the people, and for the people. It allows every citizen to have a voice in shaping the nation's destiny."
+    question: "Were you in support of partition?",
+    answer: "I  initially opposed the idea of partition, believing in a united India. However, faced with growing communal tensions and political realities, I eventually agreed to partition as a compromise to ensure independence."
   },
   sarojini_naidu: {
     question: "What inspired you to become a poet?",
