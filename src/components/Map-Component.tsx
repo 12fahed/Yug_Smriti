@@ -191,6 +191,21 @@ const MapWithRegions: React.FC = () => {
         {isScanningMap ? "Scanning..." : "Scan Map"}
       </Button>
 
+      <Button
+        onClick={() => {
+          window.location.href = "/postlogin/FahedMap";
+        }}
+        disabled={isScanningMap || !mapInstance}
+        style={{
+          position: "absolute",
+          bottom: "150px",
+          left: "20px",
+          zIndex: 1000,
+        }}
+      >
+        {isScanningMap ? "Redirecting..." : "Change Year"}
+      </Button>
+
       {/* Information Cards Section */}
       {historicEvents?.length > 0 && (
         <div
