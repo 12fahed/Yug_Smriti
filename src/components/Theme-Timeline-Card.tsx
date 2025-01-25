@@ -45,7 +45,7 @@ const TimelineCard: React.FC<{ event: TimelineEvent; onViewDetails: (event: Time
         }
       }
 
-      const prompt = `For the Topic ${event.title} where ${event.duration} what are the various perspectives present? Please provide a list of 3-5 key perspectives names and assume yourself as in place of that prespective and tell me what prespective/opinion they might have in a paragraph.`
+      const prompt = `For the Topic ${event.title} where ${event.duration} what are the various perspectives present? Please provide a list of 3-5 key perspectives names and assume yourself as in place of that prespective and tell me what prespective/opinion they might have in a paragraph. Give prespectives in First Person`
 
       const fetchedPerspectives = await fetchFromGenAI(schema, prompt)
       console.log(fetchedPerspectives)
@@ -116,7 +116,7 @@ const TimelineCard: React.FC<{ event: TimelineEvent; onViewDetails: (event: Time
                 <>
                   <div className="pl-10 pt-5">
                     <h4 className="font-semibold">{perspectives[currentPerspectiveIndex].prespectiveName}</h4>
-                    <p>{perspectives[currentPerspectiveIndex].prespective}</p>
+                    <p>&quot;{perspectives[currentPerspectiveIndex].prespective}&quot;</p>
                   </div>
                   <div className="mt-4 flex justify-between">
                     <Button variant="outline" onClick={prevPerspective} disabled={currentPerspectiveIndex === 0}>

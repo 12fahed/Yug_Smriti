@@ -7,6 +7,7 @@ import "mapbox-gl/dist/mapbox-gl.css"
 import { fetchFromGenAI } from "@/lib/genAIClient"
 import { SchemaType } from "@google/generative-ai"
 import InfoCard from "./Info-Card"
+import { Button } from "@/components/ui/button"
 
 const generateYearRange = (startYear: number, endYear: number, gap: number) => {
   const years = []
@@ -20,6 +21,8 @@ const MapWithRegions: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<number | null>(null)
   const [gap, setGap] = useState<number>(1) // Initial gap between years (1 year)
   const [historicEvents, setHistoricEvents] = useState<any[]>([])
+  const [mapInstance, setMapInstance] = useState<mapboxgl.Map | null>(null)
+  const [isScanningMap, setIsScanningMap] = useState(false)
 
   const yearRange = generateYearRange(-2000, 2025, gap)
 
@@ -39,100 +42,105 @@ const MapWithRegions: React.FC = () => {
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: "map",
-      style: "mapbox://styles/cosmicraptor/cm67xg2ub00ic01qsarmtafbp",
+      // style: "mapbox://styles/cosmicraptor/cm67xg2ub00ic01qsarmtafbp",
+      style: "mapbox://styles/cosmicraptor/cm6bd5exy005u01s2ci3r3zwv",
       center: [78.9629, 20.5937],
       zoom: 4,
       interactive: true,
     })
 
     map.on("load", () => {
-      // GEN API: TODO: UNCOMMENT KAR DENA
-      const fetchCountriesInViewport = async () => {
-        const bounds = map.getBounds()
-        const sw = bounds?.getSouthWest()
-        const ne = bounds?.getNorthEast()
-
-        const visibleCoordinates = {
-          southwest: {
-            longitude: sw?.lng,
-            latitude: sw?.lat,
-          },
-          northeast: {
-            longitude: ne?.lng,
-            latitude: ne?.lat,
-          },
-        }
-
-        console.log("Visible coordinates in the viewport:", visibleCoordinates)
-
-        const schema = {
-          description: "List of countries within a bounding box",
-          type: SchemaType.ARRAY,
-          items: {
-            type: SchemaType.STRING,
-            description: "Name of a country",
-          },
-        }
-
-        const prompt = `What countries lie in the bounds with coordinates: SW(${visibleCoordinates.southwest.longitude}, ${visibleCoordinates.southwest.latitude}), NE(${visibleCoordinates.northeast.longitude}, ${visibleCoordinates.northeast.latitude})?`
-
-        try {
-          const countries = await fetchFromGenAI(schema, prompt)
-          console.log("Countries in visible region:", countries)
-
-          const noOfCountries = Math.ceil(0.75 * countries.length)
-
-          const randomCountries = getRandomElements(countries, noOfCountries)
-
-          const historicDataArray = []
-          for (const country of randomCountries) {
-            const yearToQuery = selectedYear ?? 1945
-
-            const historicMomentSchema = {
-              type: "object",
-              properties: {
-                country: { type: "string" },
-                longitudeCoordinate: { type: "string" },
-                latitudeCoordinate: { type: "string" },
-                year: { type: "number" },
-                event: { type: "string" },
-                significance: { type: "string" },
-              },
-              required: ["country", "year", "event", "significance", "longitudeCoordinate", "latitudeCoordinate"],
-            }
-
-            const historicPrompt = `What was the most historic moment in ${country} in the year ${yearToQuery}? Provide a brief description of the event and its significance.`
-
-            try {
-              const historicMoment = await fetchFromGenAI(historicMomentSchema, historicPrompt)
-              console.log("Historic Moment for", country, ":", historicMoment)
-              setHistoricEvents((prevEvents) => [...prevEvents, historicMoment])
-
-              addCardToMap(
-                map,
-                country,
-                historicMoment.longitudeCoordinate,
-                historicMoment.latitudeCoordinate,
-                historicMoment,
-              )
-            } catch (error) {
-              console.error(`Error fetching historic moment for ${country}:`, error)
-            }
-          }
-        } catch (error) {
-          console.error("Error fetching countries:", error)
-        }
-      }
-
-      fetchCountriesInViewport()
-
-      map.on("moveend", fetchCountriesInViewport)
+      setMapInstance(map)
     })
 
     return () => {
       map.remove()
     }
-  }, [selectedYear])
+  }, [])
+
+  const fetchCountriesInViewport = async (map: mapboxgl.Map) => {
+    const bounds = map.getBounds()
+    const sw = bounds?.getSouthWest()
+    const ne = bounds?.getNorthEast()
+
+    const visibleCoordinates = {
+      southwest: {
+        longitude: sw?.lng,
+        latitude: sw?.lat,
+      },
+      northeast: {
+        longitude: ne?.lng,
+        latitude: ne?.lat,
+      },
+    }
+
+    console.log("Visible coordinates in the viewport:", visibleCoordinates)
+
+    const schema = {
+      description: "List of countries within a bounding box",
+      type: SchemaType.ARRAY,
+      items: {
+        type: SchemaType.STRING,
+        description: "Name of a country",
+      },
+    }
+
+    const prompt = `What countries lie in the bounds with coordinates: SW(${visibleCoordinates.southwest.longitude}, ${visibleCoordinates.southwest.latitude}), NE(${visibleCoordinates.northeast.longitude}, ${visibleCoordinates.northeast.latitude})?`
+
+    try {
+      const countries = await fetchFromGenAI(schema, prompt)
+      console.log("Countries in visible region:", countries)
+
+      const noOfCountries = Math.ceil(0.75 * countries.length)
+
+      const randomCountries = getRandomElements(countries, noOfCountries)
+
+      const historicDataArray = []
+      for (const country of randomCountries) {
+        const yearToQuery = selectedYear ?? 1530
+
+        const historicMomentSchema = {
+          type: "object",
+          properties: {
+            country: { type: "string" },
+            longitudeCoordinate: { type: "string" },
+            latitudeCoordinate: { type: "string" },
+            year: { type: "number" },
+            event: { type: "string" },
+            significance: { type: "string" },
+          },
+          required: ["country", "year", "event", "significance", "longitudeCoordinate", "latitudeCoordinate"],
+        }
+
+        const historicPrompt = `What was the most historic moment in ${country} in the year ${yearToQuery}? Provide a brief description of the event and its significance.`
+
+        try {
+          const historicMoment = await fetchFromGenAI(historicMomentSchema, historicPrompt)
+          console.log("Historic Moment for", country, ":", historicMoment)
+          setHistoricEvents((prevEvents) => [...prevEvents, historicMoment])
+
+          addCardToMap(
+            mapInstance,
+            country,
+            historicMoment.longitudeCoordinate,
+            historicMoment.latitudeCoordinate,
+            historicMoment,
+          )
+        } catch (error) {
+          console.error(`Error fetching historic moment for ${country}:`, error)
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching countries:", error)
+    }
+  }
+
+  const scanMap = async () => {
+    if (!mapInstance) return
+    setIsScanningMap(true)
+    await fetchCountriesInViewport(mapInstance)
+    setIsScanningMap(false)
+  }
 
   const getRandomElements = (arr: string[], n: number) => {
     const shuffled = [...arr].sort(() => 0.5 - Math.random())
@@ -170,6 +178,19 @@ const MapWithRegions: React.FC = () => {
     <div style={{ position: "relative", width: "100%", height: "100vh" }}>
       <div id="map" style={{ width: "100%", height: "100%" }} />
 
+      <Button
+        onClick={scanMap}
+        disabled={isScanningMap || !mapInstance}
+        style={{
+          position: "absolute",
+          bottom: "80px",
+          left: "20px",
+          zIndex: 1000,
+        }}
+      >
+        {isScanningMap ? "Scanning..." : "Scan Map"}
+      </Button>
+
       {/* Information Cards Section */}
       {historicEvents?.length > 0 && (
         <div
@@ -181,8 +202,8 @@ const MapWithRegions: React.FC = () => {
             height: "100vh",
             overflowY: "auto",
             padding: "20px",
-            backgroundColor: "rgba(255, 255, 255, 0.9)",
-            boxShadow: "-2px 0 5px rgba(0,0,0,0.1)",
+            // backgroundColor: "transparent",
+            // boxShadow: "-2px 0 5px rgba(0,0,0,0.1)",
           }}
         >
           {historicEvents.map((event, index) => (
@@ -223,7 +244,7 @@ const MapWithRegions: React.FC = () => {
                 padding: "5px 10px",
                 textAlign: "center",
                 cursor: "pointer",
-                backgroundColor: selectedYear === year ? "#007bff" : "transparent", // Highlight selected year
+                backgroundColor: selectedYear === year ? "#d2b386" : "transparent", // Highlight selected year
                 color: selectedYear === year ? "white" : "black", // Change text color for selected year
                 borderRadius: "8px",
                 margin: "0 5px",
@@ -233,7 +254,7 @@ const MapWithRegions: React.FC = () => {
               onClick={() => handleYearClick(year)}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f0f0f0")}
               onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = selectedYear === year ? "#007bff" : "transparent")
+                (e.currentTarget.style.backgroundColor = selectedYear === year ? "#d2b386" : "transparent")
               }
             >
               {year < 0 ? `${Math.abs(year)} BC` : year}
@@ -246,3 +267,4 @@ const MapWithRegions: React.FC = () => {
 }
 
 export default MapWithRegions
+
