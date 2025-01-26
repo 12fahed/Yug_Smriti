@@ -5,7 +5,7 @@ import mapboxgl from 'mapbox-gl';
 import { Cinzel } from "next/font/google";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] }); // Load Cinzel font
-mapboxgl.accessToken = 'pk.eyJ1IjoiY29zbWljcmFwdG9yIiwiYSI6ImNtNjdubGtsdDA1M2Iya3B3dXV2MnNqaHYifQ.xZSWeE1qj5yGcq-Z3_I-Jg';
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_KEY;
 
 const FahedMap = ({ year }) => {
   const mapContainer = useRef(null);

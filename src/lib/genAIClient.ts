@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 
 // Initialize Google Generative AI with your API key
-const genAI = new GoogleGenerativeAI("AIzaSyAddOI6pA6jkc_ko9YWrgh3v2FNH1R4Eys");
+const genAI = new GoogleGenerativeAI(`${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`);
 
 /**
  * A function to interact with Google Generative AI model and fetch the result.
