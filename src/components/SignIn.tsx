@@ -270,7 +270,7 @@ const SignIn: React.FC = () => {
             Sign In
           </CardTitle>
           <CardDescription className="text-lg text-gray-600 mt-2">
-            Welcome to Rubix 25 Website
+            Welcome to Yug Smriti Website
           </CardDescription>
         </CardHeader>
         

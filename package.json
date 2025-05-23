@@ -1,5 +1,5 @@
 {
-  "name": "rubix25",
+  "name": "Yug Smriti",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -59,7 +59,6 @@
     "firebase": "^11.1.0",
     "framer-motion": "^11.18.2",
     "gsap": "^3.12.7",
-    "Inots": "file:",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.441.0",
     "mapbox-gl": "^3.9.3",
@@ -76,7 +75,6 @@
     "react-resizable-panels": "^2.1.3",
     "react-tsparticles": "^2.12.2",
     "recharts": "^2.12.7",
-    "rubix25": "file:",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",

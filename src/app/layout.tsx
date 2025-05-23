@@ -13,8 +13,8 @@ const inter = Inter({ subsets: ["latin"] });
 const cinzel = Cinzel({ subsets: ["latin"] })
 
 const metadata: Metadata = {
-  title: "Rubix25",
-  description: "Hacktivists",
+  title: "Yug Smriti",
+  description: "Fahed Khan",
 };
 
 export default function RootLayout({

@@ -28,7 +28,7 @@ export default function NavbarWithoutLogin() {
                 className="rounded-md"
               />
             </div>
-            <span className="font-montserrat font-bold text-3xl">Rubix 25</span>
+            <span className="font-montserrat font-bold text-3xl">Yug Smriti</span>
           </div>
   
           <Button variant={"link"}>
