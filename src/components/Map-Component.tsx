@@ -1,13 +1,33 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import mapboxgl from "@/lib/mapbox"
 import "mapbox-gl/dist/mapbox-gl.css"
 import { fetchFromGenAI } from "@/lib/genAIClient"
 import { SchemaType } from "@google/generative-ai"
 import InfoCard from "./Info-Card"
 import { Button } from "@/components/ui/button"
+
+// Define types for the historic event data
+interface HistoricEvent {
+  country: string
+  longitudeCoordinate: string
+  latitudeCoordinate: string
+  year: number
+  event: string
+  significance: string
+}
+
+interface Coordinates {
+  longitude: number | undefined
+  latitude: number | undefined
+}
+
+interface VisibleCoordinates {
+  southwest: Coordinates
+  northeast: Coordinates
+}
 
 const generateYearRange = (startYear: number, endYear: number, gap: number) => {
   const years = []
@@ -20,9 +40,10 @@ const generateYearRange = (startYear: number, endYear: number, gap: number) => {
 const MapWithRegions: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<number | null>(null)
   const [gap, setGap] = useState<number>(1) // Initial gap between years (1 year)
-  const [historicEvents, setHistoricEvents] = useState<any[]>([])
+  const [historicEvents, setHistoricEvents] = useState<HistoricEvent[]>([])
   const [mapInstance, setMapInstance] = useState<mapboxgl.Map | null>(null)
   const [isScanningMap, setIsScanningMap] = useState(false)
+  const mapContainerRef = useRef<HTMLDivElement>(null)
 
   const yearRange = generateYearRange(-2000, 2025, gap)
 
@@ -40,9 +61,10 @@ const MapWithRegions: React.FC = () => {
   }
 
   useEffect(() => {
+    if (!mapContainerRef.current) return
+
     const map = new mapboxgl.Map({
-      container: "map",
-      // style: "mapbox://styles/cosmicraptor/cm67xg2ub00ic01qsarmtafbp",
+      container: mapContainerRef.current,
       style: "mapbox://styles/cosmicraptor/cm6bd5exy005u01s2ci3r3zwv",
       center: [78.9629, 20.5937],
       zoom: 4,
@@ -58,19 +80,56 @@ const MapWithRegions: React.FC = () => {
     }
   }, [])
 
+  const getRandomElements = (arr: string[], n: number): string[] => {
+    const shuffled = [...arr].sort(() => 0.5 - Math.random())
+    return shuffled.slice(0, n)
+  }
+
+  const addCardToMap = (
+    map: mapboxgl.Map,
+    country: string,
+    longitudeCoordinate: string,
+    latitudeCoordinate: string,
+    historicMoment: HistoricEvent,
+  ) => {
+    // Create the popup and add it directly to the map to keep it open
+    const popup = new mapboxgl.Popup({ offset: 25 })
+      .setHTML(`
+        <div class="popup-card">
+          <h2><strong>${country}</strong><h2>
+          <h3>${historicMoment.event}</h3>
+          <p><strong>Year:</strong> ${historicMoment.year}</p>
+          <p><strong>Significance:</strong> ${historicMoment.significance}</p>
+        </div>
+      `)
+      .setLngLat([Number.parseFloat(longitudeCoordinate), Number.parseFloat(latitudeCoordinate)])
+      .addTo(map)
+
+    // Add the marker and attach the popup to it
+    new mapboxgl.Marker()
+      .setLngLat([Number.parseFloat(longitudeCoordinate), Number.parseFloat(latitudeCoordinate)])
+      .setPopup(popup)
+      .addTo(map)
+  }
+
   const fetchCountriesInViewport = async (map: mapboxgl.Map) => {
     const bounds = map.getBounds()
-    const sw = bounds?.getSouthWest()
-    const ne = bounds?.getNorthEast()
+    if (!bounds) {
+      console.error("Could not get map bounds")
+      return
+    }
 
-    const visibleCoordinates = {
+    const sw = bounds.getSouthWest()
+    const ne = bounds.getNorthEast()
+
+    const visibleCoordinates: VisibleCoordinates = {
       southwest: {
-        longitude: sw?.lng,
-        latitude: sw?.lat,
+        longitude: sw.lng,
+        latitude: sw.lat,
       },
       northeast: {
-        longitude: ne?.lng,
-        latitude: ne?.lat,
+        longitude: ne.lng,
+        latitude: ne.lat,
       },
     }
 
@@ -88,26 +147,31 @@ const MapWithRegions: React.FC = () => {
     const prompt = `What countries lie in the bounds with coordinates: SW(${visibleCoordinates.southwest.longitude}, ${visibleCoordinates.southwest.latitude}), NE(${visibleCoordinates.northeast.longitude}, ${visibleCoordinates.northeast.latitude})?`
 
     try {
-      const countries = await fetchFromGenAI(schema, prompt)
+      const countries = await fetchFromGenAI(schema, prompt) as string[]
       console.log("Countries in visible region:", countries)
 
-      const noOfCountries = Math.ceil(0.75 * countries.length)
+      if (!countries || countries.length === 0) {
+        console.log("No countries found in the visible region")
+        return
+      }
 
+      const noOfCountries = Math.ceil(0.75 * countries.length)
       const randomCountries = getRandomElements(countries, noOfCountries)
 
-      const historicDataArray = []
+      const historicDataArray: HistoricEvent[] = []
+      
       for (const country of randomCountries) {
         const yearToQuery = selectedYear ?? 1530
 
         const historicMomentSchema = {
-          type: "object",
+          type: "object" as const,
           properties: {
-            country: { type: "string" },
-            longitudeCoordinate: { type: "string" },
-            latitudeCoordinate: { type: "string" },
-            year: { type: "number" },
-            event: { type: "string" },
-            significance: { type: "string" },
+            country: { type: "string" as const },
+            longitudeCoordinate: { type: "string" as const },
+            latitudeCoordinate: { type: "string" as const },
+            year: { type: "number" as const },
+            event: { type: "string" as const },
+            significance: { type: "string" as const },
           },
           required: ["country", "year", "event", "significance", "longitudeCoordinate", "latitudeCoordinate"],
         }
@@ -115,12 +179,14 @@ const MapWithRegions: React.FC = () => {
         const historicPrompt = `What was the most historic moment in ${country} in the year ${yearToQuery}? Provide a brief description of the event and its significance.`
 
         try {
-          const historicMoment = await fetchFromGenAI(historicMomentSchema, historicPrompt)
+          const historicMoment = await fetchFromGenAI(historicMomentSchema, historicPrompt) as HistoricEvent
           console.log("Historic Moment for", country, ":", historicMoment)
+          
           setHistoricEvents((prevEvents) => [...prevEvents, historicMoment])
+          historicDataArray.push(historicMoment)
 
           addCardToMap(
-            mapInstance,
+            map,
             country,
             historicMoment.longitudeCoordinate,
             historicMoment.latitudeCoordinate,
@@ -136,47 +202,18 @@ const MapWithRegions: React.FC = () => {
   }
 
   const scanMap = async () => {
-    if (!mapInstance) return
+    if (!mapInstance) {
+      console.error("Map instance not available")
+      return
+    }
     setIsScanningMap(true)
     await fetchCountriesInViewport(mapInstance)
     setIsScanningMap(false)
   }
 
-  const getRandomElements = (arr: string[], n: number) => {
-    const shuffled = [...arr].sort(() => 0.5 - Math.random())
-    return shuffled.slice(0, n)
-  }
-
-  const addCardToMap = (
-    mapInstance: mapboxgl.Map,
-    country: string,
-    longitudeCoordinate: string,
-    latitudeCoordinate: string,
-    historicMoment: any,
-  ) => {
-    // Create the popup and add it directly to the map to keep it open
-    const popup = new mapboxgl.Popup({ offset: 25 })
-      .setHTML(`
-        <div class="popup-card">
-          <h2><strong>${country}</strong><h2>
-          <h3>${historicMoment.event}</h3>
-          <p><strong>Year:</strong> ${historicMoment.year}</p>
-          <p><strong>Significance:</strong> ${historicMoment.significance}</p>
-        </div>
-      `)
-      .setLngLat([Number.parseFloat(longitudeCoordinate), Number.parseFloat(latitudeCoordinate)]) // Set popup position
-      .addTo(mapInstance) // Immediately add popup to the map (makes it open by default)
-
-    // Add the marker and attach the popup to it
-    new mapboxgl.Marker()
-      .setLngLat([Number.parseFloat(longitudeCoordinate), Number.parseFloat(latitudeCoordinate)])
-      .setPopup(popup) // Attach popup for future interaction
-      .addTo(mapInstance) // Add marker to the map
-  }
-
   return (
     <div style={{ position: "relative", width: "100%", height: "100vh" }}>
-      <div id="map" style={{ width: "100%", height: "100%" }} />
+      <div ref={mapContainerRef} style={{ width: "100%", height: "100%" }} />
 
       <Button
         onClick={scanMap}
@@ -193,7 +230,7 @@ const MapWithRegions: React.FC = () => {
 
       <Button
         onClick={() => {
-          window.location.href = "/postlogin/FahedMap";
+          window.location.href = "/postlogin/FahedMap"
         }}
         disabled={isScanningMap || !mapInstance}
         style={{
@@ -207,7 +244,7 @@ const MapWithRegions: React.FC = () => {
       </Button>
 
       {/* Information Cards Section */}
-      {historicEvents?.length > 0 && (
+      {historicEvents.length > 0 && (
         <div
           style={{
             position: "fixed",
@@ -217,8 +254,6 @@ const MapWithRegions: React.FC = () => {
             height: "100vh",
             overflowY: "auto",
             padding: "20px",
-            // backgroundColor: "transparent",
-            // boxShadow: "-2px 0 5px rgba(0,0,0,0.1)",
           }}
         >
           {historicEvents.map((event, index) => (
@@ -237,8 +272,8 @@ const MapWithRegions: React.FC = () => {
           padding: "10px 0",
           backgroundColor: "#fff",
           borderTop: "2px solid #ddd",
-          overflowX: "auto", // Enable horizontal scrolling
-          whiteSpace: "nowrap", // Prevent wrapping of items
+          overflowX: "auto",
+          whiteSpace: "nowrap",
         }}
         onWheel={handleScroll}
       >
@@ -259,8 +294,8 @@ const MapWithRegions: React.FC = () => {
                 padding: "5px 10px",
                 textAlign: "center",
                 cursor: "pointer",
-                backgroundColor: selectedYear === year ? "#d2b386" : "transparent", // Highlight selected year
-                color: selectedYear === year ? "white" : "black", // Change text color for selected year
+                backgroundColor: selectedYear === year ? "#d2b386" : "transparent",
+                color: selectedYear === year ? "white" : "black",
                 borderRadius: "8px",
                 margin: "0 5px",
                 transition: "background-color 0.2s ease",
@@ -282,4 +317,3 @@ const MapWithRegions: React.FC = () => {
 }
 
 export default MapWithRegions
-

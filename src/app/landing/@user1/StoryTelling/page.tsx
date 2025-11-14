@@ -6,7 +6,7 @@ export default function StoryTellingPage(){
 
     return(
         <div>
-            <StoryTelling />
+            {/* <StoryTelling /> */}
         </div>
     )
 

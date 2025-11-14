@@ -54,7 +54,7 @@ export default function RomanLandingPage() {
                   Experience the Glory of Rome
                 </h1>
                 <p className="mx-auto max-w-[700px] text-stone-200 md:text-xl italic">
-                  "Veni, Vidi, Vici" - Julius Caesar
+                  &quot;Veni, Vidi, Vici&quot; - Julius Caesar
                 </p>
               </div>
               <div className="space-y-2">

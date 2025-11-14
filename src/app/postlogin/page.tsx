@@ -7,7 +7,24 @@ import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 import { NavMenu } from "@/components/prelogin/nav-menu"
 
-const timelineData = [
+// Define types for our data structures
+interface TimelineEvent {
+  year: string
+  title: string
+  description: string
+  image?: string
+}
+
+interface TimelineEra {
+  era: string
+  period: string
+  description: string
+  background: string
+  backgroundColor: string
+  events: TimelineEvent[]
+}
+
+const timelineData: TimelineEra[] = [
   {
     era: "Ancient",
     period: "3000 BCE - 500 CE",
@@ -152,19 +169,22 @@ const timelineData = [
 ]
 
 export default function Home() {
-  const [activeEra, setActiveEra] = useState(0)
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [showTimeline, setShowTimeline] = useState(false)
-  const [hoveredEvent, setHoveredEvent] = useState(null)
-  const [isHovering, setIsHovering] = useState(false)
-  const [visibleEvents, setVisibleEvents] = useState([])
+  const [activeEra, setActiveEra] = useState<number>(0)
+  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false)
+  const [showTimeline, setShowTimeline] = useState<boolean>(false)
+  const [hoveredEvent, setHoveredEvent] = useState<TimelineEvent | null>(null)
+  const [isHovering, setIsHovering] = useState<boolean>(false)
+  const [visibleEvents, setVisibleEvents] = useState<string[]>([])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisibleEvents((prev) => [...prev, entry.target.dataset.eventIndex])
+          if (entry.isIntersecting && entry.target instanceof HTMLElement) {
+            const eventIndex = entry.target.dataset.eventIndex
+            if (eventIndex) {
+              setVisibleEvents((prev) => [...prev, eventIndex])
+            }
           }
         })
       },
@@ -333,4 +353,3 @@ export default function Home() {
     </main>
   )
 }
-

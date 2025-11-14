@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import Search from "./Search";
 import { motion, AnimatePresence } from "framer-motion";
-import { useInView } from "react-intersection-observer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";

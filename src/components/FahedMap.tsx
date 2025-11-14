@@ -5,14 +5,22 @@ import mapboxgl from 'mapbox-gl';
 import { Cinzel } from "next/font/google";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] }); // Load Cinzel font
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_KEY;
 
-const FahedMap = ({ year }) => {
-  const mapContainer = useRef(null);
-  const map = useRef(null);
+// Define the component props interface
+interface FahedMapProps {
+  year: string | number; // Year can be string or number depending on your use case
+}
+
+// Set the access token (make sure this is defined)
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_KEY || '';
+
+const FahedMap: React.FC<FahedMapProps> = ({ year }) => {
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<mapboxgl.Map | null>(null);
 
   useEffect(() => {
-    if (map.current) return; // Initialize map only once
+    if (map.current || !mapContainer.current) return; // Initialize map only once and ensure container exists
+    
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/cosmicraptor/cm67xg2ub00ic01qsarmtafbp',
@@ -26,19 +34,25 @@ const FahedMap = ({ year }) => {
 
     const geojsonUrl = `/geojsondata/world_${year}.geojson`; // GeoJSON hosted in the public folder
     console.log(geojsonUrl);
+    
     fetch(geojsonUrl)
       .then((response) => response.json())
       .then((data) => {
-        if (map.current.getSource('geojson-data')) {
-          map.current.getSource('geojson-data').setData(data);
+        const currentMap = map.current;
+        if (!currentMap) return;
+
+        const source = currentMap.getSource('geojson-data') as mapboxgl.GeoJSONSource;
+        
+        if (source) {
+          source.setData(data);
         } else {
-          map.current.addSource('geojson-data', {
+          currentMap.addSource('geojson-data', {
             type: 'geojson',
             data: data,
           });
 
           // Add a line layer for borders
-          map.current.addLayer({
+          currentMap.addLayer({
             id: 'geojson-layer',
             type: 'line',
             source: 'geojson-data',
@@ -49,7 +63,7 @@ const FahedMap = ({ year }) => {
           });
 
           // Add a symbol layer for region labels
-          map.current.addLayer({
+          currentMap.addLayer({
             id: 'region-labels',
             type: 'symbol',
             source: 'geojson-data',

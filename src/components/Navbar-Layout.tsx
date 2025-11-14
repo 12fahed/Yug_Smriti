@@ -40,7 +40,7 @@ const NavbarLayout = ({ userType }: { userType: string }) => {
       <div className="flex items-center justify-between p-4 w-full">
         <div className="flex items-center">
           <div className="ml-5 space-x-6">
-            <NavbarLinks userType={userType} />
+            {/* <NavbarLinks userType={userType} /> */}
           </div>
         </div>
         <div className="flex items-center">
