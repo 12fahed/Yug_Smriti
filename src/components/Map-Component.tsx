@@ -65,7 +65,7 @@ const MapWithRegions: React.FC = () => {
 
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: "mapbox://styles/cosmicraptor/cm6bd5exy005u01s2ci3r3zwv",
+      style: "mapbox://styles/cosmicraptor/cm67xg2ub00ic01qsarmtafbp",
       center: [78.9629, 20.5937],
       zoom: 4,
       interactive: true,
